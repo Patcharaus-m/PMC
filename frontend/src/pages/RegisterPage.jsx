@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Building, Briefcase, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Building, Briefcase, ArrowRight, Eye, EyeOff, Check, X as XIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
 import myLogo from '../assets/LogoBack.png';
@@ -17,6 +17,16 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Password requirement checks
+  const pw = formData.password;
+  const pwChecks = {
+    length: pw.length >= 8,
+    uppercase: /[A-Z]/.test(pw),
+    number: /[0-9]/.test(pw),
+  };
 
   // Map frontend select values to backend enum values
   const roleMap = {
@@ -39,6 +49,11 @@ const RegisterPage = () => {
     // Client-side confirm password validation
     if (formData.password !== formData.confirmPassword) {
       setError('Password and Confirm Password do not match');
+      return;
+    }
+
+    if (!pwChecks.length || !pwChecks.uppercase || !pwChecks.number) {
+      setError('รหัสผ่านต้องมีอย่างน้อย 8 ตัว, ตัวพิมพ์ใหญ่ 1 ตัว, และตัวเลข 1 ตัว');
       return;
     }
 
@@ -193,8 +208,28 @@ const RegisterPage = () => {
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password</label>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 text-gray-400" size={18} />
-                <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="สร้างรหัสผ่าน" required />
+                <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="สร้างรหัสผ่าน" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 text-gray-400 hover:text-gray-600 bg-transparent border-none cursor-pointer p-0 transition-colors">
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+              {/* Password requirements */}
+              {pw.length > 0 && (
+                <div className="mt-2 space-y-1 px-1">
+                  <div className={`flex items-center gap-1.5 text-[11px] font-medium ${pwChecks.length ? 'text-emerald-500' : 'text-gray-400'}`}>
+                    {pwChecks.length ? <Check size={12} /> : <XIcon size={12} />}
+                    อย่างน้อย 8 ตัวอักษร
+                  </div>
+                  <div className={`flex items-center gap-1.5 text-[11px] font-medium ${pwChecks.uppercase ? 'text-emerald-500' : 'text-gray-400'}`}>
+                    {pwChecks.uppercase ? <Check size={12} /> : <XIcon size={12} />}
+                    ตัวพิมพ์ใหญ่ (A-Z) อย่างน้อย 1 ตัว
+                  </div>
+                  <div className={`flex items-center gap-1.5 text-[11px] font-medium ${pwChecks.number ? 'text-emerald-500' : 'text-gray-400'}`}>
+                    {pwChecks.number ? <Check size={12} /> : <XIcon size={12} />}
+                    ตัวเลข (0-9) อย่างน้อย 1 ตัว
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* ยืนยันรหัสผ่าน */}
@@ -202,7 +237,10 @@ const RegisterPage = () => {
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Confirm Password</label>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 text-gray-400" size={18} />
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="ยืนยันรหัสผ่าน" required />
+                <input type={showConfirm ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="ยืนยันรหัสผ่าน" required />
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 text-gray-400 hover:text-gray-600 bg-transparent border-none cursor-pointer p-0 transition-colors">
+                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 

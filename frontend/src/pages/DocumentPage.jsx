@@ -23,9 +23,25 @@ const DocumentPage = () => {
   const [formData, setFormData] = useState({
     documentNo: '',
     type: 'RFA',
+    subType: 'General',
+    discipline: '',
     subject: '',
     originatorName: '',
   });
+
+  // Discipline options per subType
+  const disciplineOptions = {
+    Material: ['AC', 'AR', 'EE', 'SN', 'ST'],
+    'Shop Drawing': ['AC', 'AR', 'EE', 'FP', 'SN', 'ST'],
+  };
+
+  // Helper to format type display
+  const formatTypeDisplay = (doc) => {
+    if (doc.type !== 'RFA') return doc.type;
+    let label = `RFA-${doc.subType || 'General'}`;
+    if (doc.discipline) label += ` / ${doc.discipline}`;
+    return label;
+  };
   const [pdfFile, setPdfFile] = useState(null);
   const fileInputRef = useRef(null);
   const [formSubmitting, setFormSubmitting] = useState(false);
@@ -70,6 +86,12 @@ const DocumentPage = () => {
       const fd = new FormData();
       fd.append('documentNo', formData.documentNo);
       fd.append('type', formData.type);
+      if (formData.type === 'RFA') {
+        fd.append('subType', formData.subType);
+        if (formData.subType === 'Material' || formData.subType === 'Shop Drawing') {
+          fd.append('discipline', formData.discipline);
+        }
+      }
       fd.append('subject', formData.subject);
       fd.append('originatorName', formData.originatorName);
       if (pdfFile) {
@@ -77,7 +99,7 @@ const DocumentPage = () => {
       }
       await uploadDocument(fd);
       setShowCreateModal(false);
-      setFormData({ documentNo: '', type: 'RFA', subject: '', originatorName: '' });
+      setFormData({ documentNo: '', type: 'RFA', subType: 'General', discipline: '', subject: '', originatorName: '' });
       setPdfFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
       await fetchDocuments();
@@ -218,7 +240,7 @@ const DocumentPage = () => {
                 onClick={() => setShowCreateModal(true)}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors w-full sm:w-auto justify-center"
               >
-                <Plus size={18} /> + ยื่นคำขอใหม่
+                <Plus size={18} /> ยื่นคำขอใหม่
               </button>
             </div>
           </div>
@@ -281,7 +303,7 @@ const DocumentPage = () => {
                           doc.type === 'VO' ? 'bg-amber-50 text-amber-600' :
                           'bg-gray-100 text-gray-500'
                         }`}>
-                          {doc.type}
+                          {formatTypeDisplay(doc)}
                         </span>
                       </td>
                       <td className="py-4 px-6 text-gray-700">{doc.subject}</td>
@@ -353,7 +375,7 @@ const DocumentPage = () => {
                 <input
                   type="text"
                   required
-                  placeholder="เช่น RFA-2024-002"
+                  placeholder="เช่น NKC-STI-NDVO-GL-057-2568"
                   value={formData.documentNo}
                   onChange={(e) => setFormData({ ...formData, documentNo: e.target.value })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -363,7 +385,7 @@ const DocumentPage = () => {
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">ประเภทเอกสาร</label>
                 <select
                   value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value, subType: e.target.value === 'RFA' ? 'General' : '', discipline: '' })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
                 >
                   <option value="RFA">RFA - Request for Approval</option>
@@ -372,12 +394,46 @@ const DocumentPage = () => {
                   <option value="VR">VR - Verification Report</option>
                 </select>
               </div>
+              {/* Sub-Type dropdown (RFA only) */}
+              {formData.type === 'RFA' && (
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">ประเภทย่อย RFA</label>
+                  <select
+                    value={formData.subType}
+                    onChange={(e) => {
+                      const newSubType = e.target.value;
+                      const opts = disciplineOptions[newSubType];
+                      setFormData({ ...formData, subType: newSubType, discipline: opts ? opts[0] : '' });
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+                  >
+                    <option value="General">General</option>
+                    <option value="Material">Material</option>
+                    <option value="Shop Drawing">Shop Drawing</option>
+                  </select>
+                </div>
+              )}
+              {/* Discipline dropdown (Material / Shop Drawing) */}
+              {formData.type === 'RFA' && (formData.subType === 'Material' || formData.subType === 'Shop Drawing') && (
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1.5">สาขา (Discipline)</label>
+                  <select
+                    value={formData.discipline}
+                    onChange={(e) => setFormData({ ...formData, discipline: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
+                  >
+                    {(disciplineOptions[formData.subType] || []).map((d) => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1.5">หัวข้อ / รายละเอียด</label>
                 <input
                   type="text"
                   required
-                  placeholder="ระบุหัวข้อเอกสาร"
+                  placeholder="เช่น งานระบบปรับอากาศชั้น 5 Zone A"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -388,7 +444,7 @@ const DocumentPage = () => {
                 <input
                   type="text"
                   required
-                  placeholder="ชื่อผู้ยื่น"
+                  placeholder="เช่น Site Eng. Somchai"
                   value={formData.originatorName}
                   onChange={(e) => setFormData({ ...formData, originatorName: e.target.value })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -474,7 +530,7 @@ const DocumentPage = () => {
                     selectedDoc.type === 'RFI' ? 'bg-purple-50 text-purple-600' :
                     selectedDoc.type === 'VO' ? 'bg-amber-50 text-amber-600' :
                     'bg-gray-100 text-gray-500'
-                  }`}>{selectedDoc.type}</span>
+                  }`}>{formatTypeDisplay(selectedDoc)}</span>
                 </div>
                 <div className="col-span-2">
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">หัวข้อ</p>

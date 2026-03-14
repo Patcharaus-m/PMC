@@ -4,12 +4,14 @@ import DocumentModel from "../model/Document.js";
 // POST /api/documents  (with multer upload)
 export const createDocument = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { documentNo, type, subject, originatorName, originatorId } = req.body;
+    const { documentNo, type, subType, discipline, subject, originatorName, originatorId } = req.body;
     const pdfUrl = req.file ? req.file.path : undefined;
 
     const doc = new DocumentModel({
       documentNo,
       type,
+      subType: type === "RFA" ? subType : undefined,
+      discipline: type === "RFA" && (subType === "Material" || subType === "Shop Drawing") ? discipline : undefined,
       subject,
       status: "Pending",
       pdfUrl,
@@ -185,37 +187,46 @@ export const seedDocuments = async (_req: Request, res: Response): Promise<void>
 
     const sampleDocs = [
       {
-        documentNo: "RFA-2024-001",
+        documentNo: "NKC-STI-NDVO-GL-057-2568",
         type: "RFA",
+        subType: "General",
         subject: "งานระบบปรับอากาศชั้น 5",
         status: "Approved",
         originatorName: "Site Eng. Somchai",
       },
       {
-        documentNo: "RFI-2024-012",
-        type: "RFI",
-        subject: "สอบถามระยะโครงเหล็ก Zone C",
+        documentNo: "NKC-STI-NDVO-MT-AC-012-2568",
+        type: "RFA",
+        subType: "Material",
+        discipline: "AC",
+        subject: "วัสดุท่อ Chilled Water System",
         status: "Pending",
         originatorName: "Foreman A",
       },
       {
-        documentNo: "VO-2024-003",
-        type: "VO",
-        subject: "เปลี่ยนสเปคพื้นกระเบื้อง",
+        documentNo: "NKC-STI-NDVO-SD-AR-003-2568",
+        type: "RFA",
+        subType: "Shop Drawing",
+        discipline: "AR",
+        subject: "Shop Drawing งานสถาปัตยกรรมชั้น 3",
         status: "Reviewing",
         originatorName: "PM Wichit",
       },
       {
-        documentNo: "VR-2024-042",
-        type: "VR",
-        subject: "Electrical Panel Verification - Wing A",
+        documentNo: "NKC-STI-NDVO-MT-EE-042-2568",
+        type: "RFA",
+        subType: "Material",
+        discipline: "EE",
+        subject: "วัสดุ Electrical Panel Wing A",
         status: "Rejected",
         originatorName: "S. Eng. Wichai",
       },
       {
-        documentNo: "RFA-2024-085",
+        documentNo: "NKC-STI-NDVO-SD-FP-085-2568",
         type: "RFA",
-        subject: "Lift Interior Finish Selection",
+        subType: "Shop Drawing",
+        discipline: "FP",
+        subject: "Shop Drawing Fire Protection System",
         status: "Pending",
         originatorName: "Architect Team",
       },
