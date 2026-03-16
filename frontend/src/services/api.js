@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance with base URL pointing to the backend API
 const api = axios.create({
-  baseURL: 'https://pmc-alwb.onrender.com',
+  baseURL: 'https://pmc-alwb.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
