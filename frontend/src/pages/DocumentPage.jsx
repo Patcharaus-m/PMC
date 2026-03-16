@@ -566,7 +566,7 @@ const DocumentPage = () => {
                     </div>
                   </div>
                   <a
-                    href={`http://localhost:3000/${selectedDoc.pdfUrl}`}
+                    href={`https://pmc-alwb.onrender.com/${selectedDoc.pdfUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors no-underline"
