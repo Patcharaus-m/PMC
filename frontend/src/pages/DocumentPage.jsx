@@ -566,13 +566,13 @@ const DocumentPage = () => {
                     </div>
                   </div>
                   <a
-                    href={`https://pmc-alwb.onrender.com/${selectedDoc.pdfUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors no-underline"
-                  >
-                    <Download size={14} /> เปิดไฟล์
-                  </a>
+  href={selectedDoc.pdfUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors no-underline"
+>
+  <Download size={14} /> เปิดไฟล์
+</a>
                 </div>
               ) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center gap-3">
