@@ -5,7 +5,13 @@ import DocumentModel from "../model/Document.js";
 export const createDocument = async (req: Request, res: Response): Promise<void> => {
   try {
     const { documentNo, type, subType, discipline, subject, originatorName, originatorId } = req.body;
-    const pdfUrl = req.file ? req.file.path : undefined;
+    
+    // ปรับให้ใช้ URL ของ Render ตรงๆ เลย
+    let pdfUrl = undefined;
+    if (req.file) {
+      const baseUrl = "https://pmc-alwb.onrender.com"; 
+      pdfUrl = `${baseUrl}/uploads/${req.file.filename}`;
+    }
 
     const doc = new DocumentModel({
       documentNo,

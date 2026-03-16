@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { fileURLToPath } from "url";
 import config from "./config/index.js";
 import { connectDB } from "./database/index.js";
 import middleware from "./middleware/index.js";
@@ -16,9 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(middleware.cors);
 
 // Static file serving for uploaded PDFs
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+// ใช้ process.cwd() เพื่อให้ชี้ไปที่ Root ของโปรเจกต์เสมอ ป้องกันปัญหา Path เพี้ยนบน Render
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // API Routes
 app.use("/api", routes);
