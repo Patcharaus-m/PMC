@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Dashboard from './pages/DashBoard'
+import Dashboard from './pages/Dashboard'
 import DocumentPage from './pages/DocumentPage'
 import QaqcPage from './pages/QaqcPage'
 import CctvPage from './pages/CctvPage'
