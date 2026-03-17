@@ -60,25 +60,9 @@ const QaqcPage = () => {
     }
   }, [selectedZone]);
 
-  // Auto-seed and fetch on first load
+  // Fetch on first load (no auto-seed)
   useEffect(() => {
-    const initData = async () => {
-      try {
-        setLoading(true);
-        const inspRes = await getInspections('All Zones', selectedProjectId);
-        if (inspRes.status === 1 && inspRes.payload.length === 0) {
-          await seedInspections(selectedProjectId);
-        }
-      } catch {
-        try {
-          await seedInspections(selectedProjectId);
-        } catch {
-          // ignore seed errors
-        }
-      }
-      await fetchInspections();
-    };
-    initData();
+    fetchInspections();
   }, []);
 
   useEffect(() => {
@@ -98,6 +82,19 @@ const QaqcPage = () => {
     if (!lastSync) return '—';
     const pad = (n) => String(n).padStart(2, '0');
     return `${lastSync.getFullYear()}-${pad(lastSync.getMonth() + 1)}-${pad(lastSync.getDate())}  ${pad(lastSync.getHours())}:${pad(lastSync.getMinutes())}`;
+  };
+
+  // ===== Seed Data Handler =====
+  const handleSeed = async () => {
+    try {
+      setLoading(true);
+      await seedInspections(selectedProjectId);
+      await fetchInspections();
+    } catch (err) {
+      console.error('Seed error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ===== Create Inspection Handler =====
@@ -283,12 +280,20 @@ const QaqcPage = () => {
               ) : inspectionData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-gray-400">
                   <span className="text-sm font-medium mb-3">ไม่พบรายการตรวจสอบ</span>
-                  <button 
-                    onClick={() => setShowCreateModal(true)}
-                    className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5 cursor-pointer border-none outline-none"
-                  >
-                    <Plus size={14} /> เพิ่มรายการตรวจสอบ
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={handleSeed}
+                      className="bg-gray-500 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-1.5 cursor-pointer border-none outline-none"
+                    >
+                      Seed Data
+                    </button>
+                    <button 
+                      onClick={() => setShowCreateModal(true)}
+                      className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5 cursor-pointer border-none outline-none"
+                    >
+                      <Plus size={14} /> เพิ่มรายการตรวจสอบ
+                    </button>
+                  </div>
                 </div>
               ) : (
                 inspectionData.map((item) => (
