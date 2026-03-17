@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance with base URL pointing to the backend API
 const api = axios.create({
-  baseURL: 'https://pmc-alwb.onrender.com/api',
+  baseURL: 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -28,15 +28,34 @@ export const registerUser = async (name, email, password, confirmPassword, role)
 
 // ============ Dashboard ============
 
-export const getDashboardSummary = async () => {
-  const response = await api.get('/dashboard/summary');
+export const getDashboardSummary = async (projectId) => {
+  const params = projectId ? { projectId } : {};
+  const response = await api.get('/dashboard/summary', { params });
+  return response.data;
+};
+
+// ============ Projects ============
+
+export const getProjects = async () => {
+  const response = await api.get('/projects');
+  return response.data;
+};
+
+export const createNewProject = async (data) => {
+  const response = await api.post('/projects', data);
+  return response.data;
+};
+
+export const updateProject = async (id, data) => {
+  const response = await api.put(`/projects/${id}`, data);
   return response.data;
 };
 
 // ============ Documents ============
 
-export const getDocuments = async () => {
-  const response = await api.get('/documents');
+export const getDocuments = async (projectId) => {
+  const params = projectId ? { projectId } : {};
+  const response = await api.get('/documents', { params });
   return response.data;
 };
 
@@ -69,26 +88,29 @@ export const deleteDocument = async (id) => {
   return response.data;
 };
 
-export const seedDocuments = async () => {
-  const response = await api.post('/documents/seed');
+export const seedDocuments = async (projectId) => {
+  const response = await api.post('/documents/seed', { projectId: projectId || undefined });
   return response.data;
 };
 
 // ============ Inspections ============
 
-export const getInspections = async (zone) => {
-  const params = zone && zone !== 'All Zones' ? { zone } : {};
+export const getInspections = async (zone, projectId) => {
+  const params = {};
+  if (zone && zone !== 'All Zones') params.zone = zone;
+  if (projectId) params.projectId = projectId;
   const response = await api.get('/inspections', { params });
   return response.data;
 };
 
-export const getInspectionSummary = async () => {
-  const response = await api.get('/inspections/summary');
+export const getInspectionSummary = async (projectId) => {
+  const params = projectId ? { projectId } : {};
+  const response = await api.get('/inspections/summary', { params });
   return response.data;
 };
 
-export const seedInspections = async () => {
-  const response = await api.post('/inspections/seed');
+export const seedInspections = async (projectId) => {
+  const response = await api.post('/inspections/seed', { projectId: projectId || undefined });
   return response.data;
 };
 

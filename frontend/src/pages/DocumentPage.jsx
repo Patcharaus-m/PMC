@@ -11,6 +11,11 @@ const DocumentPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Read selected project from localStorage
+  const rawProjectId = localStorage.getItem('selectedProjectId');
+  const selectedProjectId = rawProjectId && rawProjectId !== 'null' ? rawProjectId : null;
+  const selectedProjectName = localStorage.getItem('selectedProjectName') || '';
+
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -51,7 +56,7 @@ const DocumentPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await getDocuments();
+      const res = await getDocuments(selectedProjectId);
       setDocuments(res.payload || []);
     } catch (err) {
       setError('ไม่สามารถโหลดข้อมูลเอกสารได้ กรุณาตรวจสอบการเชื่อมต่อ Backend');
@@ -69,7 +74,7 @@ const DocumentPage = () => {
   const handleSeed = async () => {
     try {
       setFormSubmitting(true);
-      await seedDocuments();
+      await seedDocuments(selectedProjectId);
       await fetchDocuments();
     } catch (err) {
       console.error('Seed error:', err);
@@ -94,6 +99,9 @@ const DocumentPage = () => {
       }
       fd.append('subject', formData.subject);
       fd.append('originatorName', formData.originatorName);
+      if (selectedProjectId) {
+        fd.append('projectId', selectedProjectId);
+      }
       if (pdfFile) {
         fd.append('pdf', pdfFile);
       }
@@ -180,7 +188,7 @@ const DocumentPage = () => {
         {/* --- HEADER --- */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 lg:mb-8 bg-white p-4 lg:p-6 rounded-2xl shadow-sm border border-gray-100 w-full">
           <div className="w-full">
-            <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">โครงการก่อสร้างอาคารสำนักงานอัจฉริยะ (SMART OFFICE TOWER)</h2>
+            <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">{selectedProjectName || 'กรุณาเลือกโปรเจกต์'}</h2>
             <div className="flex items-center gap-3 mt-2">
               <span className="flex items-center text-xs text-emerald-500 font-semibold">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ACTIVE
@@ -361,8 +369,8 @@ const DocumentPage = () => {
 
       {/* ===== CREATE DOCUMENT MODAL ===== */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowCreateModal(false)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setShowCreateModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto my-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
               <h3 className="text-lg font-bold text-gray-800">สร้างเอกสารใหม่</h3>
               <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors bg-transparent border-none cursor-pointer">

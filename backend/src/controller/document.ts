@@ -4,12 +4,12 @@ import DocumentModel from "../model/Document.js";
 // POST /api/documents  (with multer upload)
 export const createDocument = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { documentNo, type, subType, discipline, subject, originatorName, originatorId } = req.body;
+    const { documentNo, type, subType, discipline, subject, originatorName, originatorId, projectId } = req.body;
     
     // ปรับให้ใช้ URL ของ Render ตรงๆ เลย
     let pdfUrl = undefined;
     if (req.file) {
-      const baseUrl = "https://pmc-alwb.onrender.com"; 
+      const baseUrl = "http://localhost:3000"; 
       pdfUrl = `${baseUrl}/uploads/${req.file.filename}`;
     }
 
@@ -23,6 +23,7 @@ export const createDocument = async (req: Request, res: Response): Promise<void>
       pdfUrl,
       originatorName,
       originatorId: originatorId || undefined,
+      projectId: projectId || undefined,
     });
 
     await doc.save();
@@ -44,9 +45,13 @@ export const createDocument = async (req: Request, res: Response): Promise<void>
 };
 
 // GET /api/documents
-export const getDocuments = async (_req: Request, res: Response): Promise<void> => {
+export const getDocuments = async (req: Request, res: Response): Promise<void> => {
   try {
-    const documents = await DocumentModel.find().sort({ createdAt: -1 });
+    const filter: Record<string, unknown> = {};
+    if (req.query.projectId) {
+      filter.projectId = req.query.projectId;
+    }
+    const documents = await DocumentModel.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json({
       code: 200,
@@ -178,19 +183,23 @@ export const deleteDocument = async (req: Request, res: Response): Promise<void>
 };
 
 // POST /api/documents/seed  — populate sample data
-export const seedDocuments = async (_req: Request, res: Response): Promise<void> => {
+export const seedDocuments = async (req: Request, res: Response): Promise<void> => {
   try {
-    const count = await DocumentModel.countDocuments();
-    if (count > 0) {
-      res.status(200).json({
-        code: 200,
-        status: 1,
-        error: null,
-        payload: { message: "Data already seeded", count },
-      });
-      return;
+    const projectId = req.body?.projectId && req.body.projectId.length > 0 ? req.body.projectId : undefined;
+
+    // 1. Drop stale unique index on documentNo (if exists from old schema)
+    try {
+      await DocumentModel.collection.dropIndex("documentNo_1");
+    } catch {
+      // Index doesn't exist — OK
     }
 
+    // 2. Delete existing docs for this project (or all if no projectId)
+    const delFilter: Record<string, unknown> = {};
+    if (projectId) delFilter.projectId = projectId;
+    await DocumentModel.deleteMany(delFilter);
+
+    // 3. Insert sample documents
     const sampleDocs = [
       {
         documentNo: "NKC-STI-NDVO-GL-057-2568",
@@ -245,7 +254,9 @@ export const seedDocuments = async (_req: Request, res: Response): Promise<void>
       },
     ];
 
-    await DocumentModel.insertMany(sampleDocs);
+    await DocumentModel.insertMany(
+      sampleDocs.map((d) => ({ ...d, projectId: projectId || undefined }))
+    );
 
     res.status(201).json({
       code: 201,

@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Activity, Users, FileText, CheckCircle, Clock, Menu, TrendingDown } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Activity, Users, FileText, CheckCircle, Clock, Menu, TrendingDown, Pencil, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import KpiCard from '../components/KpiCard';
 import DocStatusRow from '../components/DocStatusItem';
 import HeaderProfile from '../components/HeaderProfile';
-import { getDashboardSummary } from '../services/api';
+import ProjectSelector from '../components/ProjectSelector';
+import { getDashboardSummary, updateProject } from '../services/api';
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Project selection state — persisted in localStorage
+  const [selectedProjectId, setSelectedProjectId] = useState(() => {
+    return localStorage.getItem('selectedProjectId') || null;
+  });
+  const [selectedProjectName, setSelectedProjectName] = useState(() => {
+    return localStorage.getItem('selectedProjectName') || '';
+  });
 
   // Read logged-in user from localStorage
   const ROLE_LABELS = {
@@ -26,22 +35,32 @@ const Dashboard = () => {
   } catch { /* ignore */ }
   const userRoleLabel = ROLE_LABELS[currentUser?.role] || currentUser?.role || 'GUEST';
 
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        const result = await getDashboardSummary();
-        if (result.status === 1) {
-          setSummary(result.payload);
-        }
-      } catch (err) {
-        console.error('Failed to fetch dashboard summary:', err);
-      } finally {
-        setLoading(false);
+  // Fetch dashboard summary whenever selectedProjectId changes
+  const fetchSummary = useCallback(async (projectId) => {
+    setLoading(true);
+    try {
+      const result = await getDashboardSummary(projectId);
+      if (result.status === 1) {
+        setSummary(result.payload);
       }
-    };
-
-    fetchSummary();
+    } catch (err) {
+      console.error('Failed to fetch dashboard summary:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSummary(selectedProjectId);
+  }, [selectedProjectId, fetchSummary]);
+
+  // Handler when user picks or creates a project
+  const handleProjectChange = (projectId, projectName) => {
+    setSelectedProjectId(projectId);
+    setSelectedProjectName(projectName);
+    localStorage.setItem('selectedProjectId', projectId);
+    localStorage.setItem('selectedProjectName', projectName);
+  };
 
   // Derived values from API
   const actualProgress = summary?.progress?.actualProgress ?? 0;
@@ -64,6 +83,30 @@ const Dashboard = () => {
   // Delay info
   const isDelayed = actualProgress < plannedProgress;
 
+  // Workforce edit modal
+  const [showWorkforceModal, setShowWorkforceModal] = useState(false);
+  const [workforceInput, setWorkforceInput] = useState('');
+  const [savingWorkforce, setSavingWorkforce] = useState(false);
+
+  const handleOpenWorkforceEdit = () => {
+    setWorkforceInput(String(workforceCount));
+    setShowWorkforceModal(true);
+  };
+
+  const handleSaveWorkforce = async () => {
+    if (!selectedProjectId) return;
+    setSavingWorkforce(true);
+    try {
+      await updateProject(selectedProjectId, { workforceCount: Number(workforceInput) || 0 });
+      setShowWorkforceModal(false);
+      fetchSummary(selectedProjectId);
+    } catch (err) {
+      console.error('Failed to update workforce:', err);
+    } finally {
+      setSavingWorkforce(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f4f7f9] font-sans flex w-full overflow-x-hidden">
       
@@ -85,9 +128,17 @@ const Dashboard = () => {
         
         {/* --- HEADER --- */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 lg:mb-8 bg-white p-4 lg:p-6 rounded-2xl shadow-sm border border-gray-100 w-full">
-          <div className="w-full">
-            <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">โครงการก่อสร้างอาคารสำนักงานอัจฉริยะ (SMART OFFICE TOWER)</h2>
-            <div className="flex items-center text-xs text-emerald-500 mt-2 font-semibold">
+          <div className="w-full space-y-3">
+            {/* Project Selector */}
+            <ProjectSelector
+              selectedProjectId={selectedProjectId}
+              onProjectChange={handleProjectChange}
+            />
+            {/* Project Name & Tracker badge */}
+            <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">
+              {selectedProjectName || 'กรุณาเลือกโปรเจกต์'}
+            </h2>
+            <div className="flex items-center text-xs text-emerald-500 font-semibold">
               <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> PROJECT LIVE TRACKER
             </div>
           </div>
@@ -110,14 +161,26 @@ const Dashboard = () => {
             iconBg="bg-blue-500" 
             borderColor="#3b82f6"
           />
-          <KpiCard 
-            title="กำลังคนหน้างาน" 
-            value={loading ? '—' : String(workforceCount)} 
-            subtext={`อัปเดตล่าสุด ${formatLastUpdate()} น.`}
-            icon={<Users size={20}/>} 
-            iconBg="bg-orange-500" 
-            borderColor="#f97316"
-          />
+          <div className="relative">
+            <KpiCard 
+              title="กำลังคนหน้างาน" 
+              value={loading ? '—' : String(workforceCount)} 
+              subtext={`อัปเดตล่าสุด ${formatLastUpdate()} น.`}
+              icon={<Users size={20}/>} 
+              iconBg="bg-orange-500" 
+              borderColor="#f97316"
+            />
+            {selectedProjectId && (
+              <button
+                type="button"
+                onClick={handleOpenWorkforceEdit}
+                className="absolute top-3 right-3 p-1.5 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors cursor-pointer border-none outline-none group"
+                title="แก้ไขกำลังคน"
+              >
+                <Pencil size={14} className="text-orange-500 group-hover:text-orange-700" />
+              </button>
+            )}
+          </div>
           <KpiCard 
             title="เอกสารรออนุมัติ" 
             value={loading ? '—' : String(pendingDocuments)} 
@@ -210,6 +273,47 @@ const Dashboard = () => {
 
         </div>
       </main>
+
+      {/* === WORKFORCE EDIT MODAL === */}
+      {showWorkforceModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowWorkforceModal(false)}></div>
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-amber-50">
+              <div className="flex items-center gap-2">
+                <Users size={20} className="text-orange-600" />
+                <h3 className="text-lg font-bold text-gray-800">แก้ไขกำลังคนหน้างาน</h3>
+              </div>
+              <button type="button" onClick={() => setShowWorkforceModal(false)} className="p-1.5 rounded-lg hover:bg-white/60 transition-colors cursor-pointer border-none outline-none text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6">
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">จำนวนกำลังคน (คน)</label>
+              <input
+                id="workforce-input"
+                type="number"
+                min="0"
+                value={workforceInput}
+                onChange={(e) => setWorkforceInput(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-center text-2xl font-bold"
+              />
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+              <button type="button" onClick={() => setShowWorkforceModal(false)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer border-none outline-none">ยกเลิก</button>
+              <button
+                type="button"
+                id="save-workforce-btn"
+                onClick={handleSaveWorkforce}
+                disabled={savingWorkforce}
+                className="px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer border-none outline-none"
+              >
+                {savingWorkforce ? 'กำลังบันทึก...' : 'บันทึก'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

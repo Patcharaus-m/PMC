@@ -4,7 +4,7 @@ import Project from "../model/Project.js";
 import DocumentModel from "../model/Document.js";
 
 // GET /api/dashboard/summary
-export const getSummary = async (_req: Request, res: Response): Promise<void> => {
+export const getSummary = async (req: Request, res: Response): Promise<void> => {
   try {
     // 1. Calculate Actual Progress — average of all DailyReport.actualProgressValue
     const dailyReports = await DailyReport.find();
@@ -14,8 +14,11 @@ export const getSummary = async (_req: Request, res: Response): Promise<void> =>
       actualProgress = total / dailyReports.length;
     }
 
-    // 2. Get Project data
-    const project = await Project.findOne();
+    // 2. Get Project data — use projectId if provided, otherwise fallback to findOne
+    const projectId = req.query.projectId as string | undefined;
+    const project = projectId
+      ? await Project.findById(projectId)
+      : await Project.findOne();
     const plannedProgress = project ? project.plannedProgress : 0;
     const workforceCount = project ? project.workforceCount : 0;
     const safetyScore = project ? project.safetyScore : 100;
@@ -24,20 +27,24 @@ export const getSummary = async (_req: Request, res: Response): Promise<void> =>
     // 3. Difference
     const difference = plannedProgress - actualProgress;
 
-    // 4. Document Summary — count by status
-    const approvedCount = await DocumentModel.countDocuments({ status: "Approved" });
-    const pendingCount = await DocumentModel.countDocuments({ status: "Pending" });
-    const rejectedCount = await DocumentModel.countDocuments({ status: "Rejected" });
-    const reviewingCount = await DocumentModel.countDocuments({ status: "Reviewing" });
+    // 4. Document Summary — count by status (filtered by projectId if provided)
+    const docFilter: Record<string, unknown> = {};
+    if (projectId) {
+      docFilter.projectId = projectId;
+    }
+    const approvedCount = await DocumentModel.countDocuments({ ...docFilter, status: "Approved" });
+    const pendingCount = await DocumentModel.countDocuments({ ...docFilter, status: "Pending" });
+    const rejectedCount = await DocumentModel.countDocuments({ ...docFilter, status: "Rejected" });
+    const reviewingCount = await DocumentModel.countDocuments({ ...docFilter, status: "Reviewing" });
 
     // 5. Document breakdown by type (RFA, RFI, VO)
     const docTypes = ["RFA", "RFI", "VO"] as const;
     const documentBreakdown: Record<string, { total: number; pending: number; approved: number }> = {};
 
     for (const docType of docTypes) {
-      const totalCount = await DocumentModel.countDocuments({ type: docType });
-      const typePending = await DocumentModel.countDocuments({ type: docType, status: { $in: ["Pending", "Reviewing"] } });
-      const typeApproved = await DocumentModel.countDocuments({ type: docType, status: "Approved" });
+      const totalCount = await DocumentModel.countDocuments({ ...docFilter, type: docType });
+      const typePending = await DocumentModel.countDocuments({ ...docFilter, type: docType, status: { $in: ["Pending", "Reviewing"] } });
+      const typeApproved = await DocumentModel.countDocuments({ ...docFilter, type: docType, status: "Approved" });
       documentBreakdown[docType] = {
         total: totalCount,
         pending: typePending,

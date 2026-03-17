@@ -10,11 +10,12 @@ export interface IDocument extends MongoDocument {
   pdfUrl: string;
   originatorId: Types.ObjectId;
   originatorName: string;
+  projectId?: Types.ObjectId;
 }
 
 const DocumentSchema = new Schema<IDocument>(
   {
-    documentNo: { type: String, required: true, unique: true },
+    documentNo: { type: String, required: true },
     type: {
       type: String,
       enum: ["RFA", "RFI", "VO", "VR"],
@@ -40,6 +41,10 @@ const DocumentSchema = new Schema<IDocument>(
       ref: "User",
     },
     originatorName: { type: String, required: true },
+    projectId: {
+      type: Schema.Types.ObjectId,
+      ref: "Project",
+    },
   },
   { timestamps: true }
 );

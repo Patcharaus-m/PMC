@@ -4,8 +4,8 @@ import Inspection from "../model/Inspection.js";
 // POST /api/inspections
 export const createInspection = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, zone, assignee, date, status, punchListCount } = req.body;
-    const inspection = new Inspection({ title, zone, assignee, date, status, punchListCount });
+    const { title, zone, assignee, date, status, punchListCount, projectId } = req.body;
+    const inspection = new Inspection({ title, zone, assignee, date, status, punchListCount, projectId: projectId || undefined });
     await inspection.save();
 
     res.status(201).json({
@@ -31,6 +31,9 @@ export const getInspections = async (req: Request, res: Response): Promise<void>
     if (req.query.zone && req.query.zone !== "All Zones") {
       filter.zone = req.query.zone;
     }
+    if (req.query.projectId) {
+      filter.projectId = req.query.projectId;
+    }
 
     const inspections = await Inspection.find(filter).sort({ date: -1 });
 
@@ -51,9 +54,13 @@ export const getInspections = async (req: Request, res: Response): Promise<void>
 };
 
 // GET /api/inspections/summary
-export const getInspectionSummary = async (_req: Request, res: Response): Promise<void> => {
+export const getInspectionSummary = async (req: Request, res: Response): Promise<void> => {
   try {
-    const inspections = await Inspection.find();
+    const filter: Record<string, unknown> = {};
+    if (req.query.projectId) {
+      filter.projectId = req.query.projectId;
+    }
+    const inspections = await Inspection.find(filter);
     const total = inspections.length;
     const completed = inspections.filter((i) => i.status === "COMPLETED").length;
 
@@ -190,10 +197,13 @@ export const deleteInspection = async (req: Request, res: Response): Promise<voi
 };
 
 // POST /api/inspections/seed
-export const seedInspections = async (_req: Request, res: Response): Promise<void> => {
+export const seedInspections = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Clear existing data
-    await Inspection.deleteMany({});
+    const projectId = req.body?.projectId && req.body.projectId.length > 0 ? req.body.projectId : undefined;
+    // Clear existing data for this project
+    const delFilter: Record<string, unknown> = {};
+    if (projectId) delFilter.projectId = projectId;
+    await Inspection.deleteMany(delFilter);
 
     const seedData = [
       {
@@ -262,7 +272,9 @@ export const seedInspections = async (_req: Request, res: Response): Promise<voi
       },
     ];
 
-    await Inspection.insertMany(seedData);
+    await Inspection.insertMany(
+      seedData.map((d) => ({ ...d, projectId: projectId || undefined }))
+    );
 
     res.status(201).json({
       code: 201,

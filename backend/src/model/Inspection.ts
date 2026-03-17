@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IInspection extends Document {
   title: string;
@@ -7,6 +7,7 @@ export interface IInspection extends Document {
   date: Date;
   status: "COMPLETED" | "PENDING" | "IN PROGRESS" | "REJECTED";
   punchListCount: number;
+  projectId?: Types.ObjectId;
 }
 
 const InspectionSchema = new Schema<IInspection>(
@@ -21,6 +22,10 @@ const InspectionSchema = new Schema<IInspection>(
       default: "PENDING",
     },
     punchListCount: { type: Number, default: 0 },
+    projectId: {
+      type: Schema.Types.ObjectId,
+      ref: "Project",
+    },
   },
   { timestamps: true }
 );
