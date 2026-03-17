@@ -5,6 +5,7 @@ import KpiCard from '../components/KpiCard';
 import DocStatusRow from '../components/DocStatusItem';
 import HeaderProfile from '../components/HeaderProfile';
 import ProjectSelector from '../components/ProjectSelector';
+import GanttChart from '../components/GanttChart';
 import { getDashboardSummary } from '../services/api';
 
 const Dashboard = () => {
@@ -67,6 +68,7 @@ const Dashboard = () => {
   const incidentCount = summary?.incidentCount ?? 0;
   const lastUpdateTime = summary?.lastUpdateTime;
   const documentBreakdown = summary?.documentBreakdown ?? {};
+  const projectPlans = summary?.plans ?? [];
 
   const formatLastUpdate = () => {
     if (!lastUpdateTime) return '—';
@@ -203,6 +205,12 @@ const Dashboard = () => {
           </div>
 
         </div>
+
+        {/* --- GANTT CHART SECTION --- */}
+        <div className="w-full pb-10">
+          <GanttChart plans={projectPlans} />
+        </div>
+
       </main>
     </div>
   );

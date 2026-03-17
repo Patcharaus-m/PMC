@@ -75,6 +75,9 @@ export const getSummary = async (req: Request, res: Response): Promise<void> => 
         safetyScore,
         incidentCount,
         documentBreakdown,
+        plans: project?.plans ?? [],
+        projectStartDate: project?.startDate ?? null,
+        projectEndDate: project?.endDate ?? null,
         documentSummary: {
           ok: approvedCount,
           wait: pendingCount,
