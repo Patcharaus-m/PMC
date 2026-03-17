@@ -95,3 +95,35 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
     });
   }
 };
+
+// DELETE /api/projects/:id — Delete a project
+export const deleteProject = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const project = await Project.findByIdAndDelete(id);
+
+    if (!project) {
+      res.status(404).json({
+        code: 404,
+        status: 0,
+        error: "Project not found",
+        payload: null,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      code: 200,
+      status: 1,
+      error: null,
+      payload: { message: "Project deleted successfully" },
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      status: 0,
+      error: (error as Error).message,
+      payload: null,
+    });
+  }
+};

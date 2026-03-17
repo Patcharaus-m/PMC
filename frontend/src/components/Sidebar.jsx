@@ -65,7 +65,7 @@ const Sidebar = ({ isOpen, setIsOpen, activeMenu = 'dashboard' }) => {
 
         {/* --- เมนูตั้งค่าด้านล่าง --- */}
         <div className="mt-auto border-t border-gray-800 p-4">
-          <NavItem to="#" icon={<Settings size={20}/>} label="System Configuration" />
+          <NavItem to="/config" icon={<Settings size={20}/>} label="System Configuration" active={activeMenu === 'config'} onClick={() => setIsOpen(false)} />
         </div>
       </aside>
     </>
