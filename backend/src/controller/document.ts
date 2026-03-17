@@ -9,7 +9,7 @@ export const createDocument = async (req: Request, res: Response): Promise<void>
     // ปรับให้ใช้ URL ของ Render ตรงๆ เลย
     let pdfUrl = undefined;
     if (req.file) {
-      const baseUrl = "http://localhost:3000"; 
+      const baseUrl = "https://pmc-alwb.onrender.com"; 
       pdfUrl = `${baseUrl}/uploads/${req.file.filename}`;
     }
 
