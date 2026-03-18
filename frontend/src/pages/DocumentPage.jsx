@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, Plus, ChevronRight, Clock, X, Trash2, Edit3, Eye, MoreVertical, Database, Loader2, FileText, AlertTriangle, Upload, Download } from 'lucide-react';
+import { Menu, Plus, ChevronRight, Clock, X, Trash2, Edit3, Eye, MoreVertical, Database, Loader2, FileText, AlertTriangle, Upload, Download, Search, ChevronDown } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import StatusBadge from '../components/StatusBadge';
 import HeaderProfile from '../components/HeaderProfile';
@@ -10,6 +10,13 @@ const DocumentPage = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('ALL');
+  const [filterSubType, setFilterSubType] = useState('ALL');
+  const [filterDiscipline, setFilterDiscipline] = useState('ALL');
+  const [filterStatus, setFilterStatus] = useState('ALL');
 
   // Read selected project from localStorage
   const rawProjectId = localStorage.getItem('selectedProjectId');
@@ -166,6 +173,21 @@ const DocumentPage = () => {
     }
   }, [actionMenuOpen]);
 
+  // Derived state: Filtered documents
+  const filteredDocuments = documents.filter(doc => {
+    const matchesSearch = 
+      (doc.documentNo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (doc.subject || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (doc.originatorName || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesType = filterType === 'ALL' || doc.type === filterType;
+    const matchesSubType = filterSubType === 'ALL' || doc.subType === filterSubType;
+    const matchesDiscipline = filterDiscipline === 'ALL' || doc.discipline === filterDiscipline;
+    const matchesStatus = filterStatus === 'ALL' || (doc.status || 'PENDING').toUpperCase() === filterStatus;
+
+    return matchesSearch && matchesType && matchesSubType && matchesDiscipline && matchesStatus;
+  });
+
   return (
     <div className="min-h-screen bg-[#f4f7f9] font-sans flex w-full overflow-x-hidden">
       
@@ -253,6 +275,121 @@ const DocumentPage = () => {
             </div>
           </div>
 
+          {/* Filters */}
+          <div className="p-4 lg:px-6 lg:py-4 border-b border-gray-50 flex flex-col xl:flex-row gap-3 bg-gray-50/50">
+            <div className="flex-1 min-w-[200px]">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="ค้นหาเลขที่, หัวข้อ, หรือผู้ยื่น..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white hover:border-gray-300 shadow-sm"
+                />
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              </div>
+            </div>
+            <div className="flex gap-2 w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0 items-center hide-scrollbar">
+              
+              {/* Type Filter */}
+              <div className="relative min-w-[130px] shrink-0">
+                <select 
+                  value={filterType} 
+                  onChange={(e) => { 
+                    setFilterType(e.target.value); 
+                    if(e.target.value !== 'RFA' && e.target.value !== 'ALL') {
+                      setFilterSubType('ALL'); 
+                      setFilterDiscipline('ALL');
+                    }
+                  }}
+                  className="w-full appearance-none pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm"
+                >
+                  <option value="ALL">ทุกประเภท</option>
+                  <option value="RFA">RFA</option>
+                  <option value="RFI">RFI</option>
+                  <option value="VO">VO</option>
+                  <option value="VR">VR</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+              
+              {/* SubType Filter */}
+              <div className="relative min-w-[150px] shrink-0">
+                <select 
+                  value={filterSubType} 
+                  onChange={(e) => {
+                    setFilterSubType(e.target.value);
+                    if(e.target.value === 'General' || e.target.value === 'ALL') {
+                      setFilterDiscipline('ALL');
+                    }
+                  }}
+                  disabled={filterType !== 'ALL' && filterType !== 'RFA'}
+                  className="w-full appearance-none pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-100 disabled:shadow-none"
+                >
+                  <option value="ALL">ทุกประเภทย่อย</option>
+                  <option value="General">General</option>
+                  <option value="Material">Material</option>
+                  <option value="Shop Drawing">Shop Drawing</option>
+                </select>
+                <ChevronDown size={16} className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${filterType !== 'ALL' && filterType !== 'RFA' ? 'text-gray-300' : 'text-gray-400'}`} />
+              </div>
+
+              {/* Discipline Filter */}
+              <div className="relative min-w-[140px] shrink-0">
+                <select 
+                  value={filterDiscipline} 
+                  onChange={(e) => setFilterDiscipline(e.target.value)}
+                  disabled={(filterType !== 'ALL' && filterType !== 'RFA') || (filterSubType !== 'ALL' && filterSubType === 'General')}
+                  className="w-full appearance-none pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-100 disabled:shadow-none"
+                >
+                  <option value="ALL">ทุกสาขา</option>
+                  <option value="AR">AR (สถาปัตย์)</option>
+                  <option value="ST">ST (โครงสร้าง)</option>
+                  <option value="EE">EE (ไฟฟ้า)</option>
+                  <option value="SN">SN (สุขาภิบาล)</option>
+                  <option value="AC">AC (ปรับอากาศ)</option>
+                  <option value="ME">ME (เครื่องกล)</option>
+                  <option value="FP">FP (ดับเพลิง)</option>
+                  <option value="ID">ID (ตกแต่งภายใน)</option>
+                </select>
+                <ChevronDown size={16} className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${((filterType !== 'ALL' && filterType !== 'RFA') || (filterSubType !== 'ALL' && filterSubType === 'General')) ? 'text-gray-300' : 'text-gray-400'}`} />
+              </div>
+
+              {/* Status Filter */}
+              <div className="relative min-w-[130px] shrink-0">
+                <select 
+                  value={filterStatus} 
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="w-full appearance-none pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm"
+                >
+                  <option value="ALL">ทุกสถานะ</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="REVIEWING">REVIEWING</option>
+                  <option value="APPROVED">APPROVED</option>
+                  <option value="REJECTED">REJECTED</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+              
+              {/* Clear Filter Button */}
+              {(searchQuery || filterType !== 'ALL' || filterSubType !== 'ALL' || filterDiscipline !== 'ALL' || filterStatus !== 'ALL') && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setFilterType('ALL');
+                    setFilterSubType('ALL');
+                    setFilterDiscipline('ALL');
+                    setFilterStatus('ALL');
+                  }}
+                  className="w-10 h-10 shrink-0 flex items-center justify-center text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all border border-transparent hover:border-red-100 shadow-sm hover:shadow bg-white"
+                  title="ล้างตัวกรอง"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Loading State */}
           {loading && (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
@@ -282,83 +419,101 @@ const DocumentPage = () => {
           {/* Table */}
           {!loading && !error && documents.length > 0 && (
             <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse min-w-[800px]">
-                <thead>
-                  <tr className="bg-[#f9fafc] text-[10px] uppercase tracking-wider text-gray-400 font-bold border-b border-gray-100">
-                    <th className="py-4 px-6 font-bold">เลขที่เอกสาร</th>
-                    <th className="py-4 px-6 font-bold">ประเภท</th>
-                    <th className="py-4 px-6 font-bold">หัวข้อ</th>
-                    <th className="py-4 px-6 font-bold">ผู้ยื่น</th>
-                    <th className="py-4 px-6 font-bold">สถานะ</th>
-                    <th className="py-4 px-6 font-bold text-right">การจัดการ</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {documents.map((doc) => (
-                    <tr key={doc._id} className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors group cursor-pointer">
-                      <td className="py-4 px-6 font-bold text-blue-600">
-                        <button
-                          className="hover:underline bg-transparent border-none cursor-pointer text-blue-600 font-bold"
-                          onClick={() => { setSelectedDoc(doc); setShowDetailModal(true); }}
-                        >
-                          {doc.documentNo}
-                        </button>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className={`px-2.5 py-1 rounded text-[10px] font-bold ${
-                          doc.type === 'RFA' ? 'bg-blue-50 text-blue-600' :
-                          doc.type === 'RFI' ? 'bg-purple-50 text-purple-600' :
-                          doc.type === 'VO' ? 'bg-amber-50 text-amber-600' :
-                          'bg-gray-100 text-gray-500'
-                        }`}>
-                          {formatTypeDisplay(doc)}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-gray-700">{doc.subject}</td>
-                      <td className="py-4 px-6 text-gray-500 italic text-xs">{doc.originatorName}</td>
-                      <td className="py-4 px-6">
-                        <StatusBadge status={doc.status?.toUpperCase() || 'PENDING'} />
-                      </td>
-                      <td className="py-4 px-6 text-right relative">
-                        <button
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors inline-flex items-center justify-center bg-transparent border-none cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActionMenuOpen(actionMenuOpen === doc._id ? null : doc._id);
-                          }}
-                        >
-                          <MoreVertical size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
-                        </button>
-
-                        {/* Action Dropdown */}
-                        {actionMenuOpen === doc._id && (
-                          <div className="absolute right-6 top-12 bg-white border border-gray-100 rounded-xl shadow-xl py-1.5 z-30 w-44 animate-fade-in">
-                            <button
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
-                              onClick={() => { setSelectedDoc(doc); setShowDetailModal(true); setActionMenuOpen(null); }}
-                            >
-                              <Eye size={15} className="text-blue-500" /> ดูรายละเอียด
-                            </button>
-                            <button
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
-                              onClick={() => { setSelectedDoc(doc); setShowStatusModal(true); setActionMenuOpen(null); }}
-                            >
-                              <Edit3 size={15} className="text-emerald-500" /> เปลี่ยนสถานะ
-                            </button>
-                            <div className="border-t border-gray-100 my-1"></div>
-                            <button
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
-                              onClick={() => { setSelectedDoc(doc); setShowDeleteModal(true); setActionMenuOpen(null); }}
-                            >
-                              <Trash2 size={15} /> ลบเอกสาร
-                            </button>
-                          </div>
-                        )}
-                      </td>
+              {filteredDocuments.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-2">
+                  <p className="text-sm text-gray-500 font-medium">ไม่พบเอกสารที่ตรงกับเงื่อนไขการค้นหา</p>
+                  <button 
+                    onClick={() => {
+                      setSearchQuery('');
+                      setFilterType('ALL');
+                      setFilterSubType('ALL');
+                      setFilterDiscipline('ALL');
+                      setFilterStatus('ALL');
+                    }}
+                    className="text-xs text-blue-600 hover:underline mt-1 bg-transparent border-none cursor-pointer font-bold"
+                  >
+                    ล้างตัวกรองทั้งหมด
+                  </button>
+                </div>
+              ) : (
+                <table className="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-[#f9fafc] text-[10px] uppercase tracking-wider text-gray-400 font-bold border-b border-gray-100">
+                      <th className="py-4 px-6 font-bold">เลขที่เอกสาร</th>
+                      <th className="py-4 px-6 font-bold">ประเภท</th>
+                      <th className="py-4 px-6 font-bold">หัวข้อ</th>
+                      <th className="py-4 px-6 font-bold">ผู้ยื่น</th>
+                      <th className="py-4 px-6 font-bold">สถานะ</th>
+                      <th className="py-4 px-6 font-bold text-right">การจัดการ</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="text-sm">
+                    {filteredDocuments.map((doc) => (
+                      <tr key={doc._id} className="border-b border-gray-50 hover:bg-blue-50/30 transition-colors group cursor-pointer">
+                        <td className="py-4 px-6 font-bold text-blue-600">
+                          <button
+                            className="hover:underline bg-transparent border-none cursor-pointer text-blue-600 font-bold"
+                            onClick={() => { setSelectedDoc(doc); setShowDetailModal(true); }}
+                          >
+                            {doc.documentNo}
+                          </button>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className={`px-2.5 py-1 rounded text-[10px] font-bold ${
+                            doc.type === 'RFA' ? 'bg-blue-50 text-blue-600' :
+                            doc.type === 'RFI' ? 'bg-purple-50 text-purple-600' :
+                            doc.type === 'VO' ? 'bg-amber-50 text-amber-600' :
+                            'bg-gray-100 text-gray-500'
+                          }`}>
+                            {formatTypeDisplay(doc)}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-gray-700">{doc.subject}</td>
+                        <td className="py-4 px-6 text-gray-500 italic text-xs">{doc.originatorName}</td>
+                        <td className="py-4 px-6">
+                          <StatusBadge status={doc.status?.toUpperCase() || 'PENDING'} />
+                        </td>
+                        <td className="py-4 px-6 text-right relative">
+                          <button
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors inline-flex items-center justify-center bg-transparent border-none cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActionMenuOpen(actionMenuOpen === doc._id ? null : doc._id);
+                            }}
+                          >
+                            <MoreVertical size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+                          </button>
+
+                          {/* Action Dropdown */}
+                          {actionMenuOpen === doc._id && (
+                            <div className="absolute right-6 top-12 bg-white border border-gray-100 rounded-xl shadow-xl py-1.5 z-30 w-44 animate-fade-in">
+                              <button
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
+                                onClick={() => { setSelectedDoc(doc); setShowDetailModal(true); setActionMenuOpen(null); }}
+                              >
+                                <Eye size={15} className="text-blue-500" /> ดูรายละเอียด
+                              </button>
+                              <button
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
+                                onClick={() => { setSelectedDoc(doc); setShowStatusModal(true); setActionMenuOpen(null); }}
+                              >
+                                <Edit3 size={15} className="text-emerald-500" /> เปลี่ยนสถานะ
+                              </button>
+                              <div className="border-t border-gray-100 my-1"></div>
+                              <button
+                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
+                                onClick={() => { setSelectedDoc(doc); setShowDeleteModal(true); setActionMenuOpen(null); }}
+                              >
+                                <Trash2 size={15} /> ลบเอกสาร
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
 
