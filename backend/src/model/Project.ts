@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IPlan {
   order?: string;
@@ -11,6 +11,7 @@ export interface IPlan {
 
 export interface IProject extends Document {
   projectName: string;
+  createdBy: Types.ObjectId;
   startDate: Date;
   endDate: Date;
   plannedProgress: number;
@@ -35,6 +36,7 @@ const PlanSchema = new Schema<IPlan>(
 const ProjectSchema = new Schema<IProject>(
   {
     projectName: { type: String, required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     startDate: { type: Date },
     endDate: { type: Date },
     plannedProgress: { type: Number, default: 0 },

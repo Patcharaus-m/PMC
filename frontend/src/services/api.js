@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance with base URL pointing to the backend API
 const api = axios.create({
-  baseURL: 'https://pmc-alwb.onrender.com/api',
+  baseURL: 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,12 +37,15 @@ export const getDashboardSummary = async (projectId) => {
 // ============ Projects ============
 
 export const getProjects = async () => {
-  const response = await api.get('/projects');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const params = user._id ? { userId: user._id } : {};
+  const response = await api.get('/projects', { params });
   return response.data;
 };
 
 export const createNewProject = async (data) => {
-  const response = await api.post('/projects', data);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const response = await api.post('/projects', { ...data, userId: user._id });
   return response.data;
 };
 

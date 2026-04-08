@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import Project from "../model/Project.js";
 
-// GET /api/projects — List all projects
-export const getAllProjects = async (_req: Request, res: Response): Promise<void> => {
+// GET /api/projects — List projects for a specific user
+export const getAllProjects = async (req: Request, res: Response): Promise<void> => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    // Filter by userId query param (each user sees only their own projects)
+    const { userId } = req.query;
+
+    const filter: Record<string, unknown> = {};
+    if (userId) {
+      filter.createdBy = userId;
+    }
+
+    const projects = await Project.find(filter).sort({ createdAt: -1 });
     res.status(200).json({
       code: 200,
       status: 1,
@@ -21,10 +29,10 @@ export const getAllProjects = async (_req: Request, res: Response): Promise<void
   }
 };
 
-// POST /api/projects — Create a new project
+// POST /api/projects — Create a new project (owned by a user)
 export const createProject = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { projectName, startDate, endDate, plannedProgress, workforceCount, safetyScore, incidentCount } = req.body;
+    const { projectName, startDate, endDate, plannedProgress, workforceCount, safetyScore, incidentCount, userId } = req.body;
 
     if (!projectName) {
       res.status(400).json({
@@ -36,8 +44,19 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
+    if (!userId) {
+      res.status(400).json({
+        code: 400,
+        status: 0,
+        error: "userId is required",
+        payload: null,
+      });
+      return;
+    }
+
     const project = await Project.create({
       projectName,
+      createdBy: userId,
       startDate: startDate || new Date(),
       endDate: endDate || new Date(),
       plannedProgress: plannedProgress ?? 0,
