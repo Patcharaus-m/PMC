@@ -8,6 +8,8 @@ export interface IInspection extends Document {
   status: "COMPLETED" | "PENDING" | "IN PROGRESS" | "REJECTED";
   punchListCount: number;
   projectId?: Types.ObjectId;
+  beforeImage?: string;
+  afterImage?: string;
 }
 
 const InspectionSchema = new Schema<IInspection>(
@@ -26,8 +28,11 @@ const InspectionSchema = new Schema<IInspection>(
       type: Schema.Types.ObjectId,
       ref: "Project",
     },
+    beforeImage: { type: String, default: "" },
+    afterImage: { type: String, default: "" },
   },
   { timestamps: true }
 );
 
 export default mongoose.model<IInspection>("Inspection", InspectionSchema);
+

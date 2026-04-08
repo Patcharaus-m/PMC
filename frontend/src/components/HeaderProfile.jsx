@@ -3,11 +3,11 @@ import { User, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ROLE_LABELS = {
-  Admin: 'ADMIN',
-  PM: 'PROJECT MANAGER',
-  SiteEngineer: 'SITE ENGINEER',
-  Inspector: 'INSPECTOR',
-  DocumentController: 'DOCUMENT CONTROLLER',
+  Admin: 'ผู้ดูแลระบบ',
+  PM: 'ผู้จัดการโครงการ',
+  SiteEngineer: 'วิศวกรสนาม',
+  Inspector: 'ผู้ตรวจสอบ',
+  DocumentController: 'ผู้ควบคุมเอกสาร',
 };
 
 const HeaderProfile = () => {
@@ -23,7 +23,7 @@ const HeaderProfile = () => {
     console.error('Failed to parse user from localStorage', e);
   }
 
-  const userName = user?.name || 'Guest';
+  const userName = user?.name || 'ผู้เยี่ยมชม';
   const userRole = ROLE_LABELS[user?.role] || user?.role || 'UNKNOWN';
 
   const handleLogout = () => {

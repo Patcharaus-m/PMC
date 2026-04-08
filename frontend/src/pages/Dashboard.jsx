@@ -21,18 +21,18 @@ const Dashboard = () => {
   });
 
   const ROLE_LABELS = {
-    Admin: 'ADMIN',
-    PM: 'PROJECT MANAGER',
-    SiteEngineer: 'SITE ENGINEER',
-    Inspector: 'INSPECTOR',
-    DocumentController: 'DOCUMENT CONTROLLER',
+    Admin: 'ผู้ดูแลระบบ',
+    PM: 'ผู้จัดการโครงการ',
+    SiteEngineer: 'วิศวกรสนาม',
+    Inspector: 'ผู้ตรวจสอบ',
+    DocumentController: 'ผู้ควบคุมเอกสาร',
   };
   let currentUser = null;
   try {
     const raw = localStorage.getItem('user');
     if (raw) currentUser = JSON.parse(raw);
   } catch { /* ignore */ }
-  const userRoleLabel = ROLE_LABELS[currentUser?.role] || currentUser?.role || 'GUEST';
+  const userRoleLabel = ROLE_LABELS[currentUser?.role] || currentUser?.role || 'ผู้เยี่ยมชม';
 
   const fetchSummary = useCallback(async (projectId) => {
     setLoading(true);
@@ -105,7 +105,7 @@ const Dashboard = () => {
               {selectedProjectName || 'กรุณาเลือกโปรเจกต์'}
             </h2>
             <div className="flex items-center text-xs text-emerald-500 font-semibold">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> PROJECT LIVE TRACKER
+              <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ติดตามโปรเจกต์แบบเรียลไทม์
             </div>
           </div>
           <div className="flex items-center gap-4 lg:gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 shrink-0">
@@ -122,7 +122,7 @@ const Dashboard = () => {
           <KpiCard 
             title="ความคืบหน้าจริง" 
             value={loading ? '—' : `${actualProgress}%`} 
-            subtext={loading ? 'Loading...' : `แผนงาน: ${plannedProgress}%`} 
+            subtext={loading ? 'กำลังโหลด...' : `แผนงาน: ${plannedProgress}%`} 
             icon={<Activity size={20}/>} 
             iconBg="bg-blue-500" 
             borderColor="#3b82f6"
@@ -159,7 +159,7 @@ const Dashboard = () => {
           <div className="bg-white p-5 lg:p-6 rounded-2xl shadow-sm border border-gray-100 w-full min-w-0">
             <h3 className="font-bold text-base lg:text-lg text-gray-800 flex items-center gap-2 mb-6">
               <TrendingDown size={20} className="text-blue-600"/>
-              เปรียบเทียบแผนงาน (Planned vs Actual)
+              เปรียบเทียบแผนงาน (แผน vs จริง)
             </h3>
             <div className="space-y-5">
               <div>
@@ -194,7 +194,7 @@ const Dashboard = () => {
               สถานะเอกสารสำคัญ
             </h3>
             {loading ? (
-              <p className="text-sm text-gray-400">Loading document data...</p>
+              <p className="text-sm text-gray-400">กำลังโหลดข้อมูลเอกสาร...</p>
             ) : (
               <div>
                 {Object.entries(documentBreakdown).map(([type, data]) => (

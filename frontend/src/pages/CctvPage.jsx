@@ -32,12 +32,12 @@ const CctvPage = () => {
           <div className="w-full">
             <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">โครงการก่อสร้างอาคารสำนักงานอัจฉริยะ (SMART OFFICE TOWER)</h2>
             <div className="flex items-center text-xs text-emerald-500 mt-2 font-semibold">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> PROJECT LIVE TRACKER
+              <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ติดตามโปรเจกต์แบบเรียลไทม์
             </div>
           </div>
           <div className="flex items-center gap-4 lg:gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 shrink-0">
             <div className="flex items-center gap-2 hidden sm:flex">
-               <span className="text-[10px] text-gray-400 font-bold uppercase">Current Role Perspective</span>
+               <span className="text-[10px] text-gray-400 font-bold uppercase">มุมมองสิทธิ์ผู้ใช้</span>
                <select className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border-none outline-none">
                  <option>PROJECT MANAGER</option>
                </select>
@@ -50,12 +50,12 @@ const CctvPage = () => {
         <div className="flex justify-between items-end gap-4 mb-6">
           <div className="min-w-0">
             <p className="text-blue-600 text-[10px] lg:text-xs font-bold tracking-widest uppercase mb-1 flex items-center gap-2">
-               <span className="w-4 h-[2px] bg-blue-600 shrink-0"></span> <span className="truncate">Project Intelligence</span>
+               <span className="w-4 h-[2px] bg-blue-600 shrink-0"></span> <span className="truncate">ระบบอัจฉริยะโปรเจกต์</span>
             </p>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black italic uppercase text-gray-900 tracking-tight truncate">Site Intelligence</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black italic uppercase text-gray-900 tracking-tight truncate">กล้องวงจรหน้างาน</h1>
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0">
-            <span className="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest">Last Data Sync</span>
+            <span className="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest">อัปเดตล่าสุด</span>
             <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs lg:text-sm font-bold text-gray-700 bg-white px-2 py-1.5 lg:px-3 lg:py-2 rounded-xl shadow-sm border border-gray-100">
               <Clock size={14} className="text-gray-400"/>
               <span className="hidden sm:inline">2024-05-20</span> 09:30
@@ -83,7 +83,7 @@ const CctvPage = () => {
                  <div className="bg-blue-600 p-1.5 rounded-lg"><Navigation size={18} fill="white"/></div>
                  <span className="font-black text-sm lg:text-base tracking-widest italic">DRONE OPS</span>
                </div>
-               <span className="text-[10px] bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-800 font-bold tracking-wider">LIVE</span>
+               <span className="text-[10px] bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-800 font-bold tracking-wider">ออนไลน์</span>
             </div>
             
             {/* Map Placeholder */}
@@ -101,41 +101,41 @@ const CctvPage = () => {
             {/* Drone Stats */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-[#1a2133] p-3 rounded-xl border border-gray-800">
-                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase"><Battery size={12}/> BATTERY</p>
+                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase"><Battery size={12}/> แบตเตอรี่</p>
                 <p className="text-xl lg:text-2xl font-black text-blue-400">82%</p>
               </div>
               <div className="bg-[#1a2133] p-3 rounded-xl border border-gray-800">
-                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase">ALTITUDE</p>
+                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase">ความสูง</p>
                 <p className="text-xl lg:text-2xl font-black">45m</p>
               </div>
             </div>
 
             <div className="text-center mb-6">
-               <p className="text-[8px] lg:text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">GPS COORDINATES</p>
+               <p className="text-[8px] lg:text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">พิกัด GPS</p>
                <p className="text-xs lg:text-sm font-mono text-blue-300">13.7563° N, 100.5018° E</p>
             </div>
 
             <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black italic tracking-wider py-3 lg:py-4 rounded-xl transition-colors text-xs lg:text-sm">
-              TAKE HIGH-RES ORTHOPHOTO
+              ถ่ายภาพมุมสูงความละเอียดสูง
             </button>
           </div>
 
           {/* OPERATION LOG PANEL (Light Theme) */}
           <div className="bg-white rounded-2xl border border-gray-100 p-4 lg:p-6 shadow-sm">
-             <h3 className="text-xs font-bold tracking-wider text-gray-800 uppercase mb-4">Operation Log</h3>
+             <h3 className="text-xs font-bold tracking-wider text-gray-800 uppercase mb-4">บันทึกการทำงาน</h3>
              
              <div className="space-y-3">
                <div className="flex gap-3 items-start text-[10px] lg:text-xs">
                  <span className="text-gray-400 font-mono shrink-0">09:12</span>
-                 <span className="text-gray-600 font-medium">Drone Takeoff successful</span>
+                 <span className="text-gray-600 font-medium">โดรนขึ้นบินสำเร็จ</span>
                </div>
                <div className="flex gap-3 items-start text-[10px] lg:text-xs">
                  <span className="text-gray-400 font-mono shrink-0">09:15</span>
-                 <span className="text-gray-600 font-medium">Zone B survey completed</span>
+                 <span className="text-gray-600 font-medium">สำรวจ Zone B เสร็จสมบูรณ์</span>
                </div>
                <div className="flex gap-3 items-start text-[10px] lg:text-xs">
                  <span className="text-orange-400 font-mono shrink-0">09:18</span>
-                 <span className="text-orange-600 font-bold">Wind speed warning (18km/h)</span>
+                 <span className="text-orange-600 font-bold">แจ้งเตือนลมแรง (18 กม./ชม.)</span>
                </div>
              </div>
           </div>

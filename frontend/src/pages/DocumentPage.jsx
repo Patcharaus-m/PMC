@@ -213,7 +213,7 @@ const DocumentPage = () => {
             <h2 className="text-lg lg:text-xl font-bold text-gray-800 break-words leading-tight">{selectedProjectName || 'กรุณาเลือกโปรเจกต์'}</h2>
             <div className="flex items-center gap-3 mt-2">
               <span className="flex items-center text-xs text-emerald-500 font-semibold">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ACTIVE
+                <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ใช้งานอยู่
               </span>
               <span className="text-gray-300">|</span>
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">เปลี่ยนมุมมองสิทธิ์ผู้ใช้</span>
@@ -232,13 +232,13 @@ const DocumentPage = () => {
           <div className="min-w-0">
             <p className="text-blue-600 text-[10px] lg:text-xs font-bold tracking-widest uppercase mb-1 flex items-center gap-2">
               <span className="w-4 h-[2px] bg-blue-600 shrink-0"></span>
-              <span className="truncate">Project Intelligence</span>
+              <span className="truncate">ระบบอัจฉริยะโปรเจกต์</span>
             </p>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black italic uppercase text-gray-900 tracking-tight">PROJECT DOCUMENTS</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black italic uppercase text-gray-900 tracking-tight">เอกสารโปรเจกต์</h1>
             <p className="text-xs text-gray-400 mt-1">ระบบบริหารและควบคุมโครงการ (PMC) - อัปเดตข้อมูลแบบเรียลไทม์</p>
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0">
-            <span className="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest">Last Data Sync</span>
+            <span className="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest">อัปเดตล่าสุด</span>
             <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs lg:text-sm font-bold text-gray-700 bg-white px-2 py-1.5 lg:px-3 lg:py-2 rounded-xl shadow-sm border border-gray-100">
               <Clock size={14} className="text-gray-400"/>
               <span className="hidden sm:inline">{new Date().toLocaleDateString('th-TH')}</span> {new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}
@@ -252,7 +252,7 @@ const DocumentPage = () => {
           {/* Card Header */}
           <div className="p-4 lg:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-50">
             <div>
-              <h3 className="text-lg lg:text-xl font-bold text-gray-800">Document Management System (RFA/RFI)</h3>
+              <h3 className="text-lg lg:text-xl font-bold text-gray-800">ระบบจัดการเอกสาร (RFA/RFI)</h3>
               <p className="text-xs text-gray-400 mt-1">ระบบติดตามสถานะเอกสารคำขอและการอนุมัติโครงการ</p>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
@@ -263,7 +263,7 @@ const DocumentPage = () => {
                   className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
                 >
                   <Database size={18} />
-                  {formSubmitting ? 'กำลังโหลด...' : 'Seed Data'}
+                  {formSubmitting ? 'กำลังโหลด...' : 'เพิ่มข้อมูลตัวอย่าง'}
                 </button>
               )}
               <button
@@ -412,7 +412,7 @@ const DocumentPage = () => {
             <div className="flex flex-col items-center justify-center py-20 gap-3">
               <FileText size={40} className="text-gray-300" />
               <p className="text-sm text-gray-400 font-medium">ยังไม่มีเอกสารในระบบ</p>
-              <p className="text-xs text-gray-300">กดปุ่ม "Seed Data" เพื่อเพิ่มข้อมูลตัวอย่าง หรือ "ยื่นคำขอใหม่" เพื่อสร้างเอกสาร</p>
+              <p className="text-xs text-gray-300">กดปุ่ม "เพิ่มข้อมูลตัวอย่าง" เพื่อเพิ่มข้อมูลตัวอย่าง หรือ "ยื่นคำขอใหม่" เพื่อสร้างเอกสาร</p>
             </div>
           )}
 
@@ -551,10 +551,10 @@ const DocumentPage = () => {
                   onChange={(e) => setFormData({ ...formData, type: e.target.value, subType: e.target.value === 'RFA' ? 'General' : '', discipline: '' })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
                 >
-                  <option value="RFA">RFA - Request for Approval</option>
-                  <option value="RFI">RFI - Request for Information</option>
-                  <option value="VO">VO - Variation Order</option>
-                  <option value="VR">VR - Verification Report</option>
+                  <option value="RFA">RFA - คำขออนุมัติ</option>
+                  <option value="RFI">RFI - คำขอข้อมูล</option>
+                  <option value="VO">VO - คำสั่งเปลี่ยนแปลง</option>
+                  <option value="VR">VR - รายงานตรวจรับ</option>
                 </select>
               </div>
               {/* Sub-Type dropdown (RFA only) */}
@@ -792,10 +792,10 @@ const DocumentPage = () => {
                         : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                     }`}
                   >
-                    {st === 'Pending' && '⏳ Pending'}
-                    {st === 'Reviewing' && '🔍 Reviewing'}
-                    {st === 'Approved' && '✅ Approved'}
-                    {st === 'Rejected' && '❌ Rejected'}
+                    {st === 'Pending' && '⏳ รอดำเนินการ'}
+                    {st === 'Reviewing' && '🔍 กำลังตรวจสอบ'}
+                    {st === 'Approved' && '✅ อนุมัติแล้ว'}
+                    {st === 'Rejected' && '❌ ไม่อนุมัติ'}
                   </button>
                 ))}
               </div>

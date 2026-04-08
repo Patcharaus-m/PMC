@@ -105,7 +105,7 @@ export const seedDocuments = async (projectId) => {
 
 export const getInspections = async (zone, projectId) => {
   const params = {};
-  if (zone && zone !== 'All Zones') params.zone = zone;
+  if (zone && zone !== 'ทุกโซน') params.zone = zone;
   if (projectId) params.projectId = projectId;
   const response = await api.get('/inspections', { params });
   return response.data;

@@ -150,7 +150,7 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-600 rounded-full shrink-0"></span>
           )}
           <span className="text-[8px] sm:text-[10px] font-mono text-gray-200">
-            {isConnected ? `REC ${uptime}` : 'OFFLINE'}
+            {isConnected ? `REC ${uptime}` : 'ออฟไลน์'}
           </span>
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
@@ -188,15 +188,15 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
               <button
                 onClick={() => setRtspUrl(DEFAULT_RTSP)}
                 className="shrink-0 bg-gray-700/50 hover:bg-gray-700 text-gray-400 text-[8px] sm:text-[9px] font-bold px-2 py-1.5 rounded-lg transition-colors uppercase"
-                title="Reset to default"
+                title="รีเซ็ตค่าเริ่มต้น"
               >
-                Reset
+                รีเซ็ต
               </button>
             )}
           </div>
           {isConnected && (
             <p className="text-[8px] text-amber-500/80 mt-1.5 font-medium">
-              ⚠ Disconnect ก่อนเปลี่ยน URL
+              ⚠ ตัดการเชื่อมต่อก่อนเปลี่ยน URL
             </p>
           )}
         </div>
@@ -220,7 +220,7 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
         {isDisconnected && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 z-[2]">
             <Camera className="text-gray-700/50" size={36} />
-            <span className="text-[10px] text-gray-600 font-medium">กดปุ่ม Connect เพื่อรับสัญญาณ</span>
+            <span className="text-[10px] text-gray-600 font-medium">กดปุ่มเชื่อมต่อเพื่อรับสัญญาณ</span>
           </div>
         )}
 
@@ -242,7 +242,7 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
               className="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] sm:text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-200 active:scale-95"
             >
               <Play size={11} fill="white" />
-              Connect
+              เชื่อมต่อ
             </button>
           ) : (
             <button
@@ -250,7 +250,7 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
               className="flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white text-[9px] sm:text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all duration-200 active:scale-95"
             >
               <Square size={11} fill="white" />
-              Disconnect
+              ตัดการเชื่อมต่อ
             </button>
           )}
           <button
@@ -266,7 +266,7 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12' }) => {
           isConnected ? 'text-emerald-400' : isConnecting ? 'text-amber-400' : 'text-gray-500'
         }`}>
           {isConnected ? <Wifi size={11} /> : isConnecting ? <Loader2 size={11} className="animate-spin" /> : <WifiOff size={11} />}
-          {isConnected ? 'LIVE' : isConnecting ? 'CONNECTING' : 'OFFLINE'}
+          {isConnected ? 'ออนไลน์' : isConnecting ? 'กำลังเชื่อมต่อ...' : 'ออฟไลน์'}
         </div>
       </div>
     </div>
