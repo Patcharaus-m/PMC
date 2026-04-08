@@ -28,6 +28,8 @@ const HeaderProfile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('selectedProjectId');
+    localStorage.removeItem('selectedProjectName');
     setIsOpen(false);
     navigate('/');
   };

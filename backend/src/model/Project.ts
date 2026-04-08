@@ -36,7 +36,7 @@ const PlanSchema = new Schema<IPlan>(
 const ProjectSchema = new Schema<IProject>(
   {
     projectName: { type: String, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     startDate: { type: Date },
     endDate: { type: Date },
     plannedProgress: { type: Number, default: 0 },
