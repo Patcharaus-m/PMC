@@ -4,6 +4,7 @@ import config from "./config/index.js";
 import { connectDB } from "./database/index.js";
 import middleware from "./middleware/index.js";
 import routes from "./routers/index.js";
+import { startRtspRelay } from "./rtsp-relay.js";
 
 const app = express();
 
@@ -32,5 +33,8 @@ const PORT = config.HOST_API_PORT || 3000;
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+
+    // Start RTSP → WebSocket relay for CCTV
+    startRtspRelay();
   });
 });
