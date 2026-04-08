@@ -8,8 +8,13 @@ export const getAllProjects = async (req: Request, res: Response): Promise<void>
     const { userId } = req.query;
 
     const filter: Record<string, unknown> = {};
+    // Show: 1) user's own projects  2) old projects without an owner
     if (userId) {
-      filter.createdBy = userId;
+      filter.$or = [
+        { createdBy: userId },
+        { createdBy: { $exists: false } },
+        { createdBy: null },
+      ];
     }
 
     const projects = await Project.find(filter).sort({ createdAt: -1 });
@@ -44,19 +49,9 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    if (!userId) {
-      res.status(400).json({
-        code: 400,
-        status: 0,
-        error: "userId is required",
-        payload: null,
-      });
-      return;
-    }
-
     const project = await Project.create({
       projectName,
-      createdBy: userId,
+      ...(userId && { createdBy: userId }),
       startDate: startDate || new Date(),
       endDate: endDate || new Date(),
       plannedProgress: plannedProgress ?? 0,

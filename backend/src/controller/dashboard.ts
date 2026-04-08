@@ -14,11 +14,11 @@ export const getSummary = async (req: Request, res: Response): Promise<void> => 
       actualProgress = total / dailyReports.length;
     }
 
-    // 2. Get Project data — use projectId if provided, otherwise fallback to findOne
+    // 2. Get Project data — only fetch if projectId is provided (no fallback)
     const projectId = req.query.projectId as string | undefined;
     const project = projectId
       ? await Project.findById(projectId)
-      : await Project.findOne();
+      : null;
     const plannedProgress = project ? project.plannedProgress : 0;
     const workforceCount = project ? project.workforceCount : 0;
     const safetyScore = project ? project.safetyScore : 100;
@@ -98,9 +98,60 @@ export const getSummary = async (req: Request, res: Response): Promise<void> => 
 // POST /api/dashboard/seed — Seed initial project + daily report data
 export const seedDashboardData = async (_req: Request, res: Response): Promise<void> => {
   try {
-    // Check if project already exists
-    const existingProject = await Project.findOne();
-    if (!existingProject) {
+    const samplePlans = [
+      {
+        order: "1",
+        planName: "งานฐานราก (Foundation)",
+        startDate: new Date("2025-01-15"),
+        endDate: new Date("2025-04-30"),
+        note: "เสาเข็ม + ฐานราก",
+        color: "#3b82f6",
+      },
+      {
+        order: "2",
+        planName: "งานโครงสร้าง (Structure)",
+        startDate: new Date("2025-05-01"),
+        endDate: new Date("2025-10-31"),
+        note: "คอนกรีต + เหล็ก",
+        color: "#ef4444",
+      },
+      {
+        order: "3",
+        planName: "งานสถาปัตยกรรม (Architecture)",
+        startDate: new Date("2025-09-01"),
+        endDate: new Date("2026-03-31"),
+        note: "ผนัง พื้น ฝ้า",
+        color: "#f59e0b",
+      },
+      {
+        order: "4",
+        planName: "งานระบบไฟฟ้า-สื่อสาร (MEP-Electrical)",
+        startDate: new Date("2025-11-01"),
+        endDate: new Date("2026-06-30"),
+        note: "ระบบไฟฟ้า + LAN + CCTV",
+        color: "#10b981",
+      },
+      {
+        order: "5",
+        planName: "งานระบบประปา-สุขาภิบาล (MEP-Plumbing)",
+        startDate: new Date("2025-11-01"),
+        endDate: new Date("2026-05-31"),
+        note: "ระบบน้ำ + สุขภัณฑ์",
+        color: "#6366f1",
+      },
+      {
+        order: "6",
+        planName: "งานตกแต่ง + ส่งมอบ (Finishing)",
+        startDate: new Date("2026-04-01"),
+        endDate: new Date("2026-12-31"),
+        note: "ตกแต่งภายใน + ทดสอบระบบ + ส่งมอบ",
+        color: "#ec4899",
+      },
+    ];
+
+    // If no projects exist at all, create a sample one
+    const projectCount = await Project.countDocuments();
+    if (projectCount === 0) {
       await Project.create({
         projectName: "โครงการก่อสร้างอาคารสำนักงานอัจฉริยะ (SMART OFFICE TOWER)",
         startDate: new Date("2025-01-01"),
@@ -109,7 +160,22 @@ export const seedDashboardData = async (_req: Request, res: Response): Promise<v
         workforceCount: 124,
         safetyScore: 100,
         incidentCount: 0,
+        plans: samplePlans,
       });
+    }
+
+    // Update ALL projects that have empty plans with sample data
+    const projectsWithoutPlans = await Project.find({
+      $or: [
+        { plans: { $exists: false } },
+        { plans: { $size: 0 } },
+      ],
+    });
+
+    for (const proj of projectsWithoutPlans) {
+      proj.plans = samplePlans as any;
+      await proj.save();
+      console.log(`✅  [Seed] Added plans to project: ${proj.projectName}`);
     }
 
     // Seed daily reports if none exist
