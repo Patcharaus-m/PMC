@@ -275,7 +275,7 @@ const SystemConfigPage = () => {
           <div className="w-full">
             <div className="flex items-center gap-2 mb-2">
               <Settings size={24} className="text-blue-600" />
-              <h2 className="text-lg lg:text-xl font-bold text-gray-800">System Configuration</h2>
+              <h2 className="text-lg lg:text-xl font-bold text-gray-800">ตั้งค่าระบบ</h2>
             </div>
             <p className="text-sm text-gray-500">จัดการโปรเจกต์ทั้งหมดในระบบ — เพิ่ม แก้ไข หรือลบโปรเจกต์ พร้อมกำหนดแผนงาน</p>
           </div>
@@ -299,7 +299,7 @@ const SystemConfigPage = () => {
                 onClick={handleSeedData}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center gap-2 cursor-pointer border-none shadow-sm"
               >
-                <Database size={16} /> Seed ข้อมูลตัวอย่าง
+                <Database size={16} /> เพิ่มข้อมูลตัวอย่าง
               </button>
               <button
                 onClick={handleOpenCreate}

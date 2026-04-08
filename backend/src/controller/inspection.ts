@@ -4,8 +4,13 @@ import Inspection from "../model/Inspection.js";
 // POST /api/inspections
 export const createInspection = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, zone, assignee, date, status, punchListCount, projectId } = req.body;
-    const inspection = new Inspection({ title, zone, assignee, date, status, punchListCount, projectId: projectId || undefined });
+    const { title, zone, assignee, date, status, punchListCount, projectId, beforeImage, afterImage } = req.body;
+    const inspection = new Inspection({
+      title, zone, assignee, date, status, punchListCount,
+      projectId: projectId || undefined,
+      beforeImage: beforeImage || "",
+      afterImage: afterImage || "",
+    });
     await inspection.save();
 
     res.status(201).json({
@@ -133,10 +138,19 @@ export const getInspectionById = async (req: Request, res: Response): Promise<vo
 // PUT /api/inspections/:id
 export const updateInspection = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, zone, assignee, date, status, punchListCount } = req.body;
+    const { title, zone, assignee, date, status, punchListCount, beforeImage, afterImage } = req.body;
+    const updateData: Record<string, unknown> = {};
+    if (title !== undefined) updateData.title = title;
+    if (zone !== undefined) updateData.zone = zone;
+    if (assignee !== undefined) updateData.assignee = assignee;
+    if (date !== undefined) updateData.date = date;
+    if (status !== undefined) updateData.status = status;
+    if (punchListCount !== undefined) updateData.punchListCount = punchListCount;
+    if (beforeImage !== undefined) updateData.beforeImage = beforeImage;
+    if (afterImage !== undefined) updateData.afterImage = afterImage;
     const inspection = await Inspection.findByIdAndUpdate(
       req.params.id,
-      { title, zone, assignee, date, status, punchListCount },
+      updateData,
       { new: true, runValidators: true }
     );
 

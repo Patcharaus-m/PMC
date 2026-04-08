@@ -48,7 +48,7 @@ const RegisterPage = () => {
 
     // Client-side confirm password validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Password and Confirm Password do not match');
+      setError('รหัสผ่านไม่ตรงกัน');
       return;
     }
 
@@ -58,7 +58,7 @@ const RegisterPage = () => {
     }
 
     if (!formData.role) {
-      setError('Please select a role');
+      setError('กรุณาเลือกตำแหน่ง');
       return;
     }
 
@@ -112,7 +112,7 @@ const RegisterPage = () => {
         {/* Hero Text */}
         <div className="relative z-10 max-w-lg">
           <h2 className="text-4xl font-black mb-6 leading-tight">
-            Build smarter,<br />manage better.
+            สร้างอย่างชาญฉลาด,<br />จัดการอย่างมืออาชีพ.
           </h2>
           <p className="text-gray-400 text-lg leading-relaxed">
             เข้าร่วมระบบจัดการโครงการก่อสร้างอัจฉริยะแบบครบวงจร ติดตามความคืบหน้า จัดการเอกสาร และตรวจสอบหน้างานแบบ Real-time
@@ -139,7 +139,7 @@ const RegisterPage = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-black text-gray-900 mb-2">Create an account</h2>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">สร้างบัญชีใหม่</h2>
             <p className="text-sm text-gray-500">กรุณากรอกข้อมูลเพื่อลงทะเบียนเข้าใช้งานระบบ</p>
           </div>
 
@@ -155,14 +155,14 @@ const RegisterPage = () => {
             {/* ชื่อ-นามสกุล */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">First Name</label>
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">ชื่อ</label>
                 <div className="relative flex items-center">
                   <User className="absolute left-3 text-gray-400" size={18} />
                   <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="ชื่อ" required />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Last Name</label>
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">นามสกุล</label>
                 <div className="relative flex items-center">
                   <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="นามสกุล" required />
                 </div>
@@ -171,7 +171,7 @@ const RegisterPage = () => {
 
             {/* อีเมล */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Email Address</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">อีเมล</label>
               <div className="relative flex items-center">
                 <Mail className="absolute left-3 text-gray-400" size={18} />
                 <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="อีเมลบริษัท หรือ อีเมลส่วนตัว" required />
@@ -180,7 +180,7 @@ const RegisterPage = () => {
 
             {/* แผนก / บริษัท */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Company / Department</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">บริษัท / แผนก</label>
               <div className="relative flex items-center">
                 <Building className="absolute left-3 text-gray-400" size={18} />
                 <input type="text" name="company" value={formData.company} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="ชื่อบริษัท หรือ แผนก" required />
@@ -189,7 +189,7 @@ const RegisterPage = () => {
 
             {/* Role / ตำแหน่ง */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">System Role</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">ตำแหน่งในระบบ</label>
               <div className="relative flex items-center">
                 <Briefcase className="absolute left-3 text-gray-400 z-10" size={18} />
                 <select name="role" value={formData.role} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all appearance-none cursor-pointer text-gray-700" required>
@@ -205,7 +205,7 @@ const RegisterPage = () => {
 
             {/* รหัสผ่าน */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">รหัสผ่าน</label>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 text-gray-400" size={18} />
                 <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="สร้างรหัสผ่าน" required />
@@ -234,7 +234,7 @@ const RegisterPage = () => {
 
             {/* ยืนยันรหัสผ่าน */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Confirm Password</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">ยืนยันรหัสผ่าน</label>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 text-gray-400" size={18} />
                 <input type={showConfirm ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all" placeholder="ยืนยันรหัสผ่าน" required />
@@ -250,7 +250,7 @@ const RegisterPage = () => {
               disabled={loading}
               className="w-full mt-8 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 group"
             >
-              {loading ? 'Creating Account...' : 'Register Account'}
+              {loading ? 'กำลังสร้างบัญชี...' : 'สมัครสมาชิก'}
               {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
             </button>
 
@@ -258,9 +258,9 @@ const RegisterPage = () => {
 
           {/* ลิงก์ไปหน้า Login */}
           <p className="mt-8 text-center text-xs text-gray-500 font-medium">
-            Already have an account?{' '}
+            มีบัญชีอยู่แล้ว?{' '}
             <Link to="/" className="text-blue-600 font-bold hover:underline">
-              Log in here
+              เข้าสู่ระบบที่นี่
             </Link>
           </p>
         </div>

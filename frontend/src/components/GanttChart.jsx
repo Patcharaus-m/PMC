@@ -47,7 +47,7 @@ const GanttChart = ({ plans }) => {
   if (!plans || plans.length === 0) {
     return (
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center min-h-[200px]">
-        <p className="text-gray-500 font-medium">ยังไม่มีแผนงาน (No plans available)</p>
+        <p className="text-gray-500 font-medium">ยังไม่มีแผนงาน</p>
       </div>
     );
   }
@@ -75,8 +75,8 @@ const GanttChart = ({ plans }) => {
             </tr>
             {/* Header Row 2: Start/Finish & Days */}
             <tr className="bg-gray-100">
-              <th className="border border-gray-200 p-1 text-center font-medium w-24 top-[37px] bg-gray-100">Start</th>
-              <th className="border border-gray-200 p-1 text-center font-medium w-24 top-[37px] bg-gray-100">Finished</th>
+              <th className="border border-gray-200 p-1 text-center font-medium w-24 top-[37px] bg-gray-100">เริ่มต้น</th>
+              <th className="border border-gray-200 p-1 text-center font-medium w-24 top-[37px] bg-gray-100">สิ้นสุด</th>
               {months.map(m => (
                 Array.from({ length: m.days }).map((_, d) => (
                   <th key={`${m.year}-${m.month}-${d}`} className="border border-gray-200 p-0 text-[10px] text-center font-normal min-w-[20px] max-w-[20px] w-[20px] text-gray-500 bg-white">
@@ -160,7 +160,7 @@ const GanttChart = ({ plans }) => {
         return (
           <div className="p-5 border-t border-gray-100 bg-white shadow-sm">
             <div className="flex items-start gap-6">
-              <span className="font-bold text-sm text-gray-800 underline decoration-gray-300 underline-offset-4 mt-1 min-w-[40px]">Note</span>
+              <span className="font-bold text-sm text-gray-800 underline decoration-gray-300 underline-offset-4 mt-1 min-w-[40px]">หมายเหตุ</span>
               <div className="flex flex-col gap-3">
                 {uniqueNotes.map((note, idx) => (
                   <div key={idx} className="flex items-start gap-4">

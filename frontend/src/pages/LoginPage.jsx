@@ -56,7 +56,7 @@ const LoginPage = () => {
         {/* Hero Text */}
         <div className="relative z-10 max-w-lg">
           <h2 className="text-4xl font-black mb-6 leading-tight">
-            Welcome back.
+            ยินดีต้อนรับกลับ
           </h2>
           <p className="text-gray-400 text-lg leading-relaxed">
             เข้าสู่ระบบเพื่อดำเนินการจัดการโครงการ ก่อสร้างอาคารสำนักงานอัจฉริยะ (SMART OFFICE TOWER) ของคุณต่อ
@@ -83,7 +83,7 @@ const LoginPage = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-black text-gray-900 mb-2">Sign in to account</h2>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">เข้าสู่ระบบ</h2>
             <p className="text-sm text-gray-500">กรอกอีเมลและรหัสผ่านเพื่อเข้าสู่ระบบ</p>
           </div>
 
@@ -98,7 +98,7 @@ const LoginPage = () => {
             
             {/* อีเมล */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Email Address</label>
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">อีเมล</label>
               <div className="relative flex items-center">
                 <Mail className="absolute left-3 text-gray-400" size={18} />
                 <input 
@@ -115,8 +115,8 @@ const LoginPage = () => {
             {/* รหัสผ่าน */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password</label>
-                <a href="#" className="text-[10px] font-bold text-blue-600 hover:underline">Forgot password?</a>
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">รหัสผ่าน</label>
+                <a href="#" className="text-[10px] font-bold text-blue-600 hover:underline">ลืมรหัสผ่าน?</a>
               </div>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 text-gray-400" size={18} />
@@ -139,7 +139,7 @@ const LoginPage = () => {
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
               />
               <label htmlFor="remember" className="text-xs font-medium text-gray-600 cursor-pointer">
-                Remember me for 30 days
+                จดจำฉัน 30 วัน
               </label>
             </div>
 
@@ -149,7 +149,7 @@ const LoginPage = () => {
               disabled={loading}
               className="w-full mt-8 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 group"
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
               {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
             </button>
 
@@ -157,9 +157,9 @@ const LoginPage = () => {
 
           {/* ลิงก์ไปหน้า Register */}
           <p className="mt-8 text-center text-xs text-gray-500 font-medium">
-            Don't have an account?{' '}
+            ยังไม่มีบัญชี?{' '}
             <Link to="/register" className="text-blue-600 font-bold hover:underline">
-              Register here
+              สมัครสมาชิกที่นี่
             </Link>
           </p>
           
