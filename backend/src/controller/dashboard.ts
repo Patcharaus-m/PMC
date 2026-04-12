@@ -2,24 +2,73 @@ import { Request, Response } from "express";
 import DailyReport from "../model/DailyReport.js";
 import Project from "../model/Project.js";
 import DocumentModel from "../model/Document.js";
+import type { IPlan } from "../model/Project.js";
+
+// ---------- Helper: Calculate planned & actual progress from plans ----------
+function calculateProgressFromPlans(plans: IPlan[]) {
+  if (!plans || plans.length === 0) {
+    return { plannedProgress: 0, actualProgress: 0 };
+  }
+
+  const now = new Date();
+  let totalPlannedWeight = 0;
+  let totalActualWeight = 0;
+
+  for (const plan of plans) {
+    const start = new Date(plan.startDate);
+    const end = new Date(plan.endDate);
+    const totalDuration = end.getTime() - start.getTime();
+
+    if (totalDuration <= 0) continue; // skip invalid plans
+
+    // --- Planned Progress (time-based) ---
+    let planProgress: number;
+    if (now >= end) {
+      planProgress = 100; // plan period has passed → should be 100%
+    } else if (now <= start) {
+      planProgress = 0; // plan hasn't started yet
+    } else {
+      const elapsed = now.getTime() - start.getTime();
+      planProgress = (elapsed / totalDuration) * 100;
+    }
+    totalPlannedWeight += planProgress;
+
+    // --- Actual Progress (from user-set status) ---
+    let actualProg: number;
+    const status = plan.status || "not_started";
+    if (status === "completed") {
+      actualProg = 100;
+    } else if (plan.actualProgress !== undefined && plan.actualProgress !== null) {
+      actualProg = plan.actualProgress;
+    } else if (status === "in_progress") {
+      actualProg = 50; // default if no actualProgress set
+    } else if (status === "delayed") {
+      actualProg = plan.actualProgress ?? 0;
+    } else {
+      actualProg = 0; // not_started
+    }
+    totalActualWeight += actualProg;
+  }
+
+  const plannedProgress = parseFloat((totalPlannedWeight / plans.length).toFixed(2));
+  const actualProgress = parseFloat((totalActualWeight / plans.length).toFixed(2));
+
+  return { plannedProgress, actualProgress };
+}
 
 // GET /api/dashboard/summary
 export const getSummary = async (req: Request, res: Response): Promise<void> => {
   try {
-    // 1. Calculate Actual Progress — average of all DailyReport.actualProgressValue
-    const dailyReports = await DailyReport.find();
-    let actualProgress = 0;
-    if (dailyReports.length > 0) {
-      const total = dailyReports.reduce((sum, r) => sum + r.actualProgressValue, 0);
-      actualProgress = total / dailyReports.length;
-    }
-
-    // 2. Get Project data — only fetch if projectId is provided (no fallback)
+    // 1. Get Project data — only fetch if projectId is provided
     const projectId = req.query.projectId as string | undefined;
     const project = projectId
       ? await Project.findById(projectId)
       : null;
-    const plannedProgress = project ? project.plannedProgress : 0;
+
+    // 2. Calculate progress from plans
+    const plans = project?.plans ?? [];
+    const { plannedProgress, actualProgress } = calculateProgressFromPlans(plans as IPlan[]);
+
     const workforceCount = project ? project.workforceCount : 0;
     const safetyScore = project ? project.safetyScore : 100;
     const incidentCount = project ? project.incidentCount : 0;
@@ -59,13 +108,22 @@ export const getSummary = async (req: Request, res: Response): Promise<void> => 
     const lastReport = await DailyReport.findOne().sort({ updatedAt: -1 });
     const lastUpdateTime = lastReport ? lastReport.updatedAt : new Date();
 
+    // 8. Plan status summary
+    const planStatusSummary = {
+      total: plans.length,
+      completed: plans.filter(p => p.status === "completed").length,
+      inProgress: plans.filter(p => p.status === "in_progress").length,
+      delayed: plans.filter(p => p.status === "delayed").length,
+      notStarted: plans.filter(p => !p.status || p.status === "not_started").length,
+    };
+
     res.status(200).json({
       code: 200,
       status: 1,
       error: null,
       payload: {
         progress: {
-          actualProgress: parseFloat(actualProgress.toFixed(2)),
+          actualProgress,
           plannedProgress,
           difference: parseFloat(difference.toFixed(2)),
         },
@@ -75,6 +133,7 @@ export const getSummary = async (req: Request, res: Response): Promise<void> => 
         safetyScore,
         incidentCount,
         documentBreakdown,
+        planStatusSummary,
         plans: project?.plans ?? [],
         projectStartDate: project?.startDate ?? null,
         projectEndDate: project?.endDate ?? null,

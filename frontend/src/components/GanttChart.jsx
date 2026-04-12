@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
 
 const GanttChart = ({ plans }) => {
+  const STATUS_LABELS = {
+    not_started: { label: 'ยังไม่เริ่ม', bg: 'bg-gray-100 text-gray-500' },
+    in_progress: { label: 'ดำเนินการ', bg: 'bg-blue-50 text-blue-600' },
+    completed: { label: 'สำเร็จ', bg: 'bg-emerald-50 text-emerald-600' },
+    delayed: { label: 'ล่าช้า', bg: 'bg-red-50 text-red-600' },
+  };
   const { months } = useMemo(() => {
     if (!plans || plans.length === 0) return { months: [], minDate: null, maxDate: null };
 
@@ -66,6 +72,7 @@ const GanttChart = ({ plans }) => {
               <th className="border border-gray-200 p-2 w-12 text-center" rowSpan={2}>ลำดับ</th>
               <th className="border border-gray-200 p-2 w-48 text-left bg-gray-100" rowSpan={2}>รายละเอียดงาน</th>
               <th className="border border-gray-200 p-2 text-center bg-gray-100" colSpan={2}>ระยะเวลาการทำงาน</th>
+              <th className="border border-gray-200 p-2 w-24 text-center bg-gray-100" rowSpan={2}>สถานะ</th>
               {months.map((m, idx) => (
                 <th key={idx} className="border border-gray-200 p-1 text-center font-semibold text-gray-700 bg-gray-200" colSpan={m.days}>
                   {m.label}
@@ -104,6 +111,12 @@ const GanttChart = ({ plans }) => {
                   </td>
                   <td className="border border-gray-200 p-1.5 text-center text-gray-600 font-medium whitespace-nowrap">
                     {pEnd.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric'})}
+                  </td>
+                  <td className="border border-gray-200 p-1.5 text-center">
+                    {(() => {
+                      const s = STATUS_LABELS[plan.status] || STATUS_LABELS.not_started;
+                      return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${s.bg}`}>{s.label}</span>;
+                    })()}
                   </td>
                   
                   {/* Days mapping */}

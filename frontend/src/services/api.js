@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance with base URL pointing to the backend API
 const api = axios.create({
-  baseURL: 'https://pmc-alwb.onrender.com/api',
+  baseURL: 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -134,6 +134,16 @@ export const updateInspection = async (id, data) => {
 
 export const deleteInspection = async (id) => {
   const response = await api.delete(`/inspections/${id}`);
+  return response.data;
+};
+
+// ============ Plan Status ============
+
+export const updatePlanStatus = async (projectId, planId, status, actualProgress) => {
+  const response = await api.put(`/projects/${projectId}/plans/${planId}/status`, {
+    status,
+    actualProgress,
+  });
   return response.data;
 };
 

@@ -141,3 +141,60 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
     });
   }
 };
+
+// PUT /api/projects/:id/plans/:planId/status — Update a plan's status & actualProgress
+export const updatePlanStatus = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id, planId } = req.params;
+    const { status, actualProgress } = req.body;
+
+    const project = await Project.findById(id);
+    if (!project) {
+      res.status(404).json({
+        code: 404,
+        status: 0,
+        error: "Project not found",
+        payload: null,
+      });
+      return;
+    }
+
+    const plan = (project.plans as any[]).find(
+      (p: any) => p._id?.toString() === planId
+    );
+    if (!plan) {
+      res.status(404).json({
+        code: 404,
+        status: 0,
+        error: "Plan not found",
+        payload: null,
+      });
+      return;
+    }
+
+    if (status) plan.status = status;
+    if (actualProgress !== undefined && actualProgress !== null) {
+      plan.actualProgress = Math.max(0, Math.min(100, Number(actualProgress)));
+    }
+
+    // Auto-set actualProgress based on status convenience
+    if (status === "completed") plan.actualProgress = 100;
+    if (status === "not_started") plan.actualProgress = 0;
+
+    await project.save();
+
+    res.status(200).json({
+      code: 200,
+      status: 1,
+      error: null,
+      payload: project,
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      status: 0,
+      error: (error as Error).message,
+      payload: null,
+    });
+  }
+};

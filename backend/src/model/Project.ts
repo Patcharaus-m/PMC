@@ -7,6 +7,8 @@ export interface IPlan {
   endDate: Date;
   note?: string;
   color?: string;
+  status?: "not_started" | "in_progress" | "completed" | "delayed";
+  actualProgress?: number; // 0-100
 }
 
 export interface IProject extends Document {
@@ -29,6 +31,12 @@ const PlanSchema = new Schema<IPlan>(
     endDate: { type: Date, required: true },
     note: { type: String },
     color: { type: String, default: '#3b82f6' },
+    status: {
+      type: String,
+      enum: ["not_started", "in_progress", "completed", "delayed"],
+      default: "not_started",
+    },
+    actualProgress: { type: Number, default: 0, min: 0, max: 100 },
   },
   { _id: true }
 );

@@ -405,6 +405,7 @@ const SystemConfigPage = () => {
                                         <th className="px-4 py-2.5 text-xs font-bold text-gray-500 uppercase">วันสิ้นสุด</th>
                                         <th className="px-4 py-2.5 text-xs font-bold text-gray-500 uppercase">ระยะเวลา</th>
                                         <th className="px-4 py-2.5 text-xs font-bold text-gray-500 uppercase">หมายเหตุ</th>
+                                        <th className="px-4 py-2.5 text-xs font-bold text-gray-500 uppercase">สถานะ</th>
                                         <th className="px-4 py-2.5 text-xs font-bold text-gray-500 uppercase text-center">จัดการ</th>
                                       </tr>
                                     </thead>
@@ -418,6 +419,18 @@ const SystemConfigPage = () => {
                                           <td className="px-4 py-3 text-sm text-gray-600">{formatDate(plan.endDate)}</td>
                                           <td className="px-4 py-3 text-sm text-gray-600">{calcMonths(plan.startDate, plan.endDate)}</td>
                                           <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-[120px]" title={plan.note || ''}>{plan.note || '—'}</td>
+                                          <td className="px-4 py-3">
+                                            {(() => {
+                                              const statusMap = {
+                                                not_started: { label: 'ยังไม่เริ่ม', bg: 'bg-gray-100 text-gray-500' },
+                                                in_progress: { label: 'ดำเนินการ', bg: 'bg-blue-50 text-blue-600' },
+                                                completed: { label: 'สำเร็จ', bg: 'bg-emerald-50 text-emerald-600' },
+                                                delayed: { label: 'ล่าช้า', bg: 'bg-red-50 text-red-600' },
+                                              };
+                                              const s = statusMap[plan.status] || statusMap.not_started;
+                                              return <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${s.bg}`}>{s.label}</span>;
+                                            })()}
+                                          </td>
                                           <td className="px-4 py-3">
                                             <div className="flex items-center justify-center gap-1">
                                               <button onClick={() => handleEditPlan(plan)} className="p-1.5 rounded-lg hover:bg-blue-100 text-blue-500 hover:text-blue-700 transition-colors cursor-pointer border-none outline-none" title="แก้ไข">
