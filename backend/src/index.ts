@@ -31,10 +31,10 @@ app.get("/", (_req, res) => {
 const PORT = config.HOST_API_PORT || 3000;
 
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 
-    // Start RTSP → WebSocket relay for CCTV
-    startRtspRelay();
+    // Start RTSP → WebSocket relay for CCTV (attached to same HTTP server)
+    startRtspRelay(server);
   });
 });

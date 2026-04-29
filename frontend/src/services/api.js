@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Axios instance with base URL pointing to the backend API
+// Axios instance — uses VITE_BACKEND_URL for local dev, falls back to Render production
 const api = axios.create({
-  baseURL: 'https://pmc-alwb.onrender.com/api',
+  baseURL: `${import.meta.env.VITE_BACKEND_URL || 'https://pmc-alwb.onrender.com'}/api`,
   headers: {
     'Content-Type': 'application/json',
   },

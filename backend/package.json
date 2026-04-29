@@ -5,7 +5,10 @@
   "main": "index.js",
   "types": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "render-build": "apt-get update && apt-get install -y ffmpeg && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
