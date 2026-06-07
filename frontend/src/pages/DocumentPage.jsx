@@ -11,6 +11,10 @@ const DocumentPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // อ่านข้อมูลผู้ใช้จาก localStorage
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser?.role === 'Admin';
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('ALL');
@@ -216,10 +220,10 @@ const DocumentPage = () => {
                 <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> ใช้งานอยู่
               </span>
               <span className="text-gray-300">|</span>
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">เปลี่ยนมุมมองสิทธิ์ผู้ใช้</span>
-              <select className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border-none outline-none">
-                <option>Project Manager</option>
-              </select>
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">สิทธิ์ผู้ใช้</span>
+              <span className={`text-xs font-bold px-2 py-1 rounded-lg ${isAdmin ? 'text-amber-600 bg-amber-50' : 'text-blue-600 bg-blue-50'}`}>
+                {isAdmin ? 'Admin (Project Manager)' : 'User'}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto justify-end shrink-0">
@@ -493,19 +497,27 @@ const DocumentPage = () => {
                               >
                                 <Eye size={15} className="text-blue-500" /> ดูรายละเอียด
                               </button>
-                              <button
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
-                                onClick={() => { setSelectedDoc(doc); setShowStatusModal(true); setActionMenuOpen(null); }}
-                              >
-                                <Edit3 size={15} className="text-emerald-500" /> เปลี่ยนสถานะ
-                              </button>
-                              <div className="border-t border-gray-100 my-1"></div>
-                              <button
-                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
-                                onClick={() => { setSelectedDoc(doc); setShowDeleteModal(true); setActionMenuOpen(null); }}
-                              >
-                                <Trash2 size={15} /> ลบเอกสาร
-                              </button>
+                              {/* ปุ่มเปลี่ยนสถานะ: เฉพาะ Admin เท่านั้น */}
+                              {isAdmin && (
+                                <button
+                                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
+                                  onClick={() => { setSelectedDoc(doc); setShowStatusModal(true); setActionMenuOpen(null); }}
+                                >
+                                  <Edit3 size={15} className="text-emerald-500" /> เปลี่ยนสถานะ
+                                </button>
+                              )}
+                              {/* ปุ่มลบ: เฉพาะ Admin */}
+                              {isAdmin && (
+                                <>
+                                  <div className="border-t border-gray-100 my-1"></div>
+                                  <button
+                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors bg-transparent border-none cursor-pointer"
+                                    onClick={() => { setSelectedDoc(doc); setShowDeleteModal(true); setActionMenuOpen(null); }}
+                                  >
+                                    <Trash2 size={15} /> ลบเอกสาร
+                                  </button>
+                                </>
+                              )}
                             </div>
                           )}
                         </td>
@@ -746,18 +758,28 @@ const DocumentPage = () => {
                 </div>
               )}
               <div className="flex gap-3 pt-4 border-t border-gray-100">
-                <button
-                  onClick={() => { setShowDetailModal(false); setShowStatusModal(true); }}
-                  className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors border-none cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Edit3 size={15} /> เปลี่ยนสถานะ
-                </button>
-                <button
-                  onClick={() => { setShowDetailModal(false); setShowDeleteModal(true); }}
-                  className="py-2.5 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors border-none cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Trash2 size={15} /> ลบ
-                </button>
+                {/* ปุ่มเปลี่ยนสถานะ: เฉพาะ Admin เท่านั้น */}
+                {isAdmin ? (
+                  <button
+                    onClick={() => { setShowDetailModal(false); setShowStatusModal(true); }}
+                    className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 transition-colors border-none cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Edit3 size={15} /> เปลี่ยนสถานะ
+                  </button>
+                ) : (
+                  <div className="flex-1 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed">
+                    <Edit3 size={15} /> เฉพาะ Admin เปลี่ยนสถานะได้
+                  </div>
+                )}
+                {/* ปุ่มลบ: เฉพาะ Admin */}
+                {isAdmin && (
+                  <button
+                    onClick={() => { setShowDetailModal(false); setShowDeleteModal(true); }}
+                    className="py-2.5 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors border-none cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Trash2 size={15} /> ลบ
+                  </button>
+                )}
               </div>
             </div>
           </div>

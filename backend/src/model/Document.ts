@@ -11,6 +11,7 @@ export interface IDocument extends MongoDocument {
   originatorId: Types.ObjectId;
   originatorName: string;
   projectId?: Types.ObjectId;
+  statusChangedByAdmin: boolean;
 }
 
 const DocumentSchema = new Schema<IDocument>(
@@ -45,8 +46,10 @@ const DocumentSchema = new Schema<IDocument>(
       type: Schema.Types.ObjectId,
       ref: "Project",
     },
+    statusChangedByAdmin: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
 export default mongoose.model<IDocument>("Document", DocumentSchema);
+

@@ -105,7 +105,18 @@ export const getDocumentById = async (req: Request, res: Response): Promise<void
 export const updateDocumentStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, userRole } = req.body;
+
+    // ตรวจสอบสิทธิ์: เฉพาะ Admin เท่านั้นที่เปลี่ยนสถานะได้
+    if (userRole !== "Admin") {
+      res.status(403).json({
+        code: 403,
+        status: 0,
+        error: "เฉพาะ Admin เท่านั้นที่สามารถเปลี่ยนสถานะเอกสารได้",
+        payload: null,
+      });
+      return;
+    }
 
     if (!["Pending", "Approved", "Rejected", "Reviewing"].includes(status)) {
       res.status(400).json({
@@ -117,9 +128,10 @@ export const updateDocumentStatus = async (req: Request, res: Response): Promise
       return;
     }
 
+    // Admin เปลี่ยนสถานะ → ตั้ง flag statusChangedByAdmin = true
     const doc = await DocumentModel.findByIdAndUpdate(
       id,
-      { status },
+      { status, statusChangedByAdmin: true },
       { new: true }
     );
 
@@ -153,6 +165,18 @@ export const updateDocumentStatus = async (req: Request, res: Response): Promise
 export const deleteDocument = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const userRole = req.query.userRole || req.body?.userRole;
+
+    // ตรวจสอบสิทธิ์: เฉพาะ Admin เท่านั้นที่ลบได้
+    if (userRole !== "Admin") {
+      res.status(403).json({
+        code: 403,
+        status: 0,
+        error: "เฉพาะ Admin เท่านั้นที่สามารถลบเอกสารได้",
+        payload: null,
+      });
+      return;
+    }
 
     const doc = await DocumentModel.findByIdAndDelete(id);
 

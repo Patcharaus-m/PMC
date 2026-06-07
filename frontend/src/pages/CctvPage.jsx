@@ -7,6 +7,10 @@ import HeaderProfile from '../components/HeaderProfile';
 const CctvPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // อ่านข้อมูลผู้ใช้จาก localStorage
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser?.role === 'Admin';
+
   return (
     <div className="min-h-screen bg-[#f4f7f9] font-sans flex w-full overflow-x-hidden">
       
@@ -37,10 +41,10 @@ const CctvPage = () => {
           </div>
           <div className="flex items-center gap-4 lg:gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 shrink-0">
             <div className="flex items-center gap-2 hidden sm:flex">
-               <span className="text-[10px] text-gray-400 font-bold uppercase">มุมมองสิทธิ์ผู้ใช้</span>
-               <select className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border-none outline-none">
-                 <option>PROJECT MANAGER</option>
-               </select>
+               <span className="text-[10px] text-gray-400 font-bold uppercase">สิทธิ์ผู้ใช้</span>
+               <span className={`text-xs font-bold px-2 py-1 rounded-lg ${isAdmin ? 'text-amber-600 bg-amber-50' : 'text-blue-600 bg-blue-50'}`}>
+                 {isAdmin ? 'Admin (Project Manager)' : 'User'}
+               </span>
             </div>
             <HeaderProfile />
           </div>
@@ -66,10 +70,10 @@ const CctvPage = () => {
         {/* --- CCTV Grid (Full Width) --- */}
         <div className="bg-white p-4 lg:p-6 rounded-2xl shadow-sm border border-gray-100 w-full min-w-0 mb-4 lg:mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-            <CameraFeed id="01" zone="ZONE A - MAIN ENTRANCE" />
-            <CameraFeed id="02" zone="ZONE B - MATERIAL STORAGE" />
-            <CameraFeed id="03" zone="ZONE C - CRANE TOWER 1" />
-            <CameraFeed id="04" zone="LOADING BAY - SOUTH" />
+            <CameraFeed id="01" zone="ZONE A - MAIN ENTRANCE" previewImage="/cctv/cam01_entrance.png" />
+            <CameraFeed id="02" zone="ZONE B - MATERIAL STORAGE" previewImage="/cctv/cam02_storage.png" />
+            <CameraFeed id="03" zone="ZONE C - CRANE TOWER 1" previewImage="/cctv/cam03_crane.png" />
+            <CameraFeed id="04" zone="LOADING BAY - SOUTH" previewImage="/cctv/cam04_loading.png" />
           </div>
         </div>
 
@@ -86,16 +90,36 @@ const CctvPage = () => {
                <span className="text-[10px] bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-800 font-bold tracking-wider">ออนไลน์</span>
             </div>
             
-            {/* Map Placeholder */}
-            <div className="aspect-video bg-[#1a2133] rounded-xl border border-gray-800 flex items-center justify-center relative overflow-hidden mb-6">
-               {/* วงกลม Radar ซ้อนๆ กัน */}
-               <div className="absolute w-48 h-48 border border-gray-700/50 rounded-full"></div>
-               <div className="absolute w-32 h-32 border border-gray-700/50 rounded-full"></div>
-               <div className="absolute w-16 h-16 border border-gray-600/50 rounded-full"></div>
-               {/* จุดระบุตำแหน่ง Ping */}
-               <div className="absolute w-8 h-8 bg-blue-500/20 rounded-full animate-ping"></div>
-               <div className="absolute w-4 h-4 bg-blue-500/40 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
-               <div className="w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_15px_rgba(59,130,246,1)] z-10"></div>
+            {/* Drone Aerial View */}
+            <div className="aspect-video bg-[#1a2133] rounded-xl border border-gray-800 relative overflow-hidden mb-6 group">
+               {/* ภาพถ่ายจากโดรน */}
+               <img src="/cctv/drone_aerial.png" alt="Drone Aerial View" className="absolute inset-0 w-full h-full object-cover" />
+               {/* HUD Overlay */}
+               <div className="absolute inset-0 pointer-events-none">
+                 {/* Crosshair center */}
+                 <div className="absolute inset-0 flex items-center justify-center">
+                   <div className="w-16 h-16 border border-blue-400/40 rounded-full"></div>
+                   <div className="absolute w-8 h-8 border border-blue-400/60 rounded-full"></div>
+                   <div className="absolute w-[1px] h-10 bg-blue-400/30"></div>
+                   <div className="absolute w-10 h-[1px] bg-blue-400/30"></div>
+                 </div>
+                 {/* Corner brackets */}
+                 <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-blue-400/50 rounded-tl-sm"></div>
+                 <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-blue-400/50 rounded-tr-sm"></div>
+                 <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-blue-400/50 rounded-bl-sm"></div>
+                 <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-blue-400/50 rounded-br-sm"></div>
+                 {/* Top info bar */}
+                 <div className="absolute top-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                   <span className="text-[8px] font-mono text-blue-300/80 bg-black/40 px-2 py-0.5 rounded">ALT 45m</span>
+                   <span className="text-[8px] font-mono text-green-400/80 bg-black/40 px-2 py-0.5 rounded flex items-center gap-1">
+                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> LIVE
+                   </span>
+                 </div>
+                 {/* GPS pin */}
+                 <div className="absolute bottom-3 left-3 text-[7px] font-mono text-blue-200/70 bg-black/40 px-2 py-1 rounded">
+                   13.7563°N, 100.5018°E
+                 </div>
+               </div>
             </div>
 
             {/* Drone Stats */}

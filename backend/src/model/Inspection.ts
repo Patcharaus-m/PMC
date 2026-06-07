@@ -10,6 +10,7 @@ export interface IInspection extends Document {
   projectId?: Types.ObjectId;
   beforeImage?: string;
   afterImage?: string;
+  statusChangedByAdmin: boolean;
 }
 
 const InspectionSchema = new Schema<IInspection>(
@@ -30,6 +31,7 @@ const InspectionSchema = new Schema<IInspection>(
     },
     beforeImage: { type: String, default: "" },
     afterImage: { type: String, default: "" },
+    statusChangedByAdmin: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -16,6 +16,10 @@ const STATUS_LABELS = {
 
 const QaqcPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // อ่านข้อมูลผู้ใช้จาก localStorage
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser?.role === 'Admin';
   const [inspectionData, setInspectionData] = useState([]);
   const [summary, setSummary] = useState(null);
   const [selectedZone, setSelectedZone] = useState('ทุกโซน');
@@ -227,9 +231,9 @@ const QaqcPage = () => {
           <div className="flex items-center gap-4 lg:gap-6 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 shrink-0">
             <div className="flex items-center gap-2 hidden sm:flex">
                <span className="text-[10px] text-gray-400 font-bold uppercase">สิทธิ์ผู้ใช้</span>
-               <select className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border-none outline-none">
-                 <option>PROJECT MANAGER</option>
-               </select>
+               <span className={`text-xs font-bold px-2 py-1 rounded-lg ${isAdmin ? 'text-amber-600 bg-amber-50' : 'text-blue-600 bg-blue-50'}`}>
+                 {isAdmin ? 'Admin (Project Manager)' : 'User'}
+               </span>
             </div>
             <HeaderProfile />
           </div>
@@ -319,14 +323,23 @@ const QaqcPage = () => {
                         </div>
                       </div>
                       <div className="relative flex items-center gap-2 sm:justify-end shrink-0 pl-14 sm:pl-0">
-                        {/* Edit button */}
-                        <button type="button" onClick={() => openEditModal(item)} className="p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-500 hover:text-blue-600 transition-colors cursor-pointer border-none outline-none" title="แก้ไขรายการ">
-                          <Pencil size={14} />
-                        </button>
-                        <button type="button" onClick={() => setEditingStatusId(editingStatusId === item._id ? null : item._id)} className="cursor-pointer border-none outline-none bg-transparent p-0" title="คลิกเพื่อเปลี่ยนสถานะ">
-                          <StatusBadge status={item.status} />
-                        </button>
-                        {editingStatusId === item._id && (
+                        {/* Edit button: User เห็นเฉพาะตอนสถานะเป็น PENDING เท่านั้น, Admin เห็นเสมอ */}
+                        {(isAdmin || item.status === 'PENDING') && (
+                          <button type="button" onClick={() => openEditModal(item)} className="p-1.5 rounded-lg bg-gray-100 hover:bg-blue-100 text-gray-500 hover:text-blue-600 transition-colors cursor-pointer border-none outline-none" title="แก้ไขรายการ">
+                            <Pencil size={14} />
+                          </button>
+                        )}
+                        {/* Status badge: เฉพาะ Admin ที่คลิกเปลี่ยนสถานะได้ */}
+                        {isAdmin ? (
+                          <button type="button" onClick={() => setEditingStatusId(editingStatusId === item._id ? null : item._id)} className="cursor-pointer border-none outline-none bg-transparent p-0" title="คลิกเพื่อเปลี่ยนสถานะ">
+                            <StatusBadge status={item.status} />
+                          </button>
+                        ) : (
+                          <div className="p-0" title="เฉพาะ Admin ที่เปลี่ยนสถานะได้">
+                            <StatusBadge status={item.status} />
+                          </div>
+                        )}
+                        {isAdmin && editingStatusId === item._id && (
                           <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-gray-100 z-20 min-w-[160px] overflow-hidden py-1">
                             <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase border-b border-gray-50">เปลี่ยนสถานะ</div>
                             {STATUSES.map((s) => (

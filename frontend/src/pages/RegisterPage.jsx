@@ -30,12 +30,8 @@ const RegisterPage = () => {
 
   // Map frontend select values to backend enum values
   const roleMap = {
-    pm: 'PM',
-    engineer: 'SiteEngineer',
-    architect: 'Inspector',
-    qaqc: 'Inspector',
-    subcon: 'DocumentController',
     admin: 'Admin',
+    user: 'User',
   };
 
   const handleChange = (e) => {
@@ -66,7 +62,7 @@ const RegisterPage = () => {
 
     try {
       const fullName = `${formData.firstName} ${formData.lastName}`.trim();
-      const backendRole = roleMap[formData.role] || 'PM';
+      const backendRole = roleMap[formData.role] || 'User';
 
       const result = await registerUser(
         fullName,
@@ -194,11 +190,8 @@ const RegisterPage = () => {
                 <Briefcase className="absolute left-3 text-gray-400 z-10" size={18} />
                 <select name="role" value={formData.role} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-all appearance-none cursor-pointer text-gray-700" required>
                   <option value="" disabled>เลือกตำแหน่งของคุณ...</option>
-                  <option value="pm">Project Manager</option>
-                  <option value="engineer">Site Engineer</option>
-                  <option value="architect">Architect</option>
-                  <option value="qaqc">QA/QC Inspector</option>
-                  <option value="subcon">Sub-contractor</option>
+                  <option value="admin">Admin (Project Manager)</option>
+                  <option value="user">User</option>
                 </select>
               </div>
             </div>

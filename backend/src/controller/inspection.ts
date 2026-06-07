@@ -138,23 +138,10 @@ export const getInspectionById = async (req: Request, res: Response): Promise<vo
 // PUT /api/inspections/:id
 export const updateInspection = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, zone, assignee, date, status, punchListCount, beforeImage, afterImage } = req.body;
-    const updateData: Record<string, unknown> = {};
-    if (title !== undefined) updateData.title = title;
-    if (zone !== undefined) updateData.zone = zone;
-    if (assignee !== undefined) updateData.assignee = assignee;
-    if (date !== undefined) updateData.date = date;
-    if (status !== undefined) updateData.status = status;
-    if (punchListCount !== undefined) updateData.punchListCount = punchListCount;
-    if (beforeImage !== undefined) updateData.beforeImage = beforeImage;
-    if (afterImage !== undefined) updateData.afterImage = afterImage;
-    const inspection = await Inspection.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!inspection) {
+    const { title, zone, assignee, date, status, punchListCount, beforeImage, afterImage, userRole } = req.body;
+    
+    const existingInspection = await Inspection.findById(req.params.id);
+    if (!existingInspection) {
       res.status(404).json({
         code: 404,
         status: 0,
@@ -163,6 +150,49 @@ export const updateInspection = async (req: Request, res: Response): Promise<voi
       });
       return;
     }
+
+    // ตรวจสอบสิทธิ์: User ไม่สามารถเปลี่ยนสถานะได้
+    if (userRole !== "Admin" && status !== undefined) {
+      res.status(403).json({
+        code: 403,
+        status: 0,
+        error: "เฉพาะ Admin เท่านั้นที่สามารถเปลี่ยนสถานะได้",
+        payload: null,
+      });
+      return;
+    }
+
+    // ตรวจสอบสิทธิ์: ถ้า Admin เปลี่ยนสถานะเป็นอย่างอื่นที่ไม่ใช่ PENDING → User ไม่สามารถแก้ไขข้อมูล
+    if (userRole !== "Admin" && existingInspection.statusChangedByAdmin && existingInspection.status !== "PENDING") {
+      res.status(403).json({
+        code: 403,
+        status: 0,
+        error: "Admin เปลี่ยนสถานะแล้ว ไม่สามารถแก้ไขข้อมูลได้",
+        payload: null,
+      });
+      return;
+    }
+
+    const updateData: Record<string, unknown> = {};
+    if (title !== undefined) updateData.title = title;
+    if (zone !== undefined) updateData.zone = zone;
+    if (assignee !== undefined) updateData.assignee = assignee;
+    if (date !== undefined) updateData.date = date;
+    if (punchListCount !== undefined) updateData.punchListCount = punchListCount;
+    if (beforeImage !== undefined) updateData.beforeImage = beforeImage;
+    if (afterImage !== undefined) updateData.afterImage = afterImage;
+
+    // ถ้า Admin เปลี่ยนสถานะ → ตั้ง flag
+    if (status !== undefined && userRole === "Admin") {
+      updateData.status = status;
+      updateData.statusChangedByAdmin = true;
+    }
+
+    const inspection = await Inspection.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
 
     res.status(200).json({
       code: 200,

@@ -3,11 +3,8 @@ import { User, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ROLE_LABELS = {
-  Admin: 'ผู้ดูแลระบบ',
-  PM: 'ผู้จัดการโครงการ',
-  SiteEngineer: 'วิศวกรสนาม',
-  Inspector: 'ผู้ตรวจสอบ',
-  DocumentController: 'ผู้ควบคุมเอกสาร',
+  Admin: 'Project Manager',
+  User: 'User',
 };
 
 const HeaderProfile = () => {

@@ -1,0 +1,481 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 15">
+<meta name="Originator" content="Microsoft Word 15">
+<style>
+  body { font-family: 'TH Sarabun New', 'Sarabun', 'Tahoma', sans-serif; font-size: 14pt; line-height: 1.6; color: #333; margin: 40px 60px; }
+  h1 { font-size: 26pt; color: #1a365d; text-align: center; border-bottom: 3px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; }
+  h2 { font-size: 20pt; color: #1e40af; margin-top: 30px; border-left: 5px solid #2563eb; padding-left: 12px; }
+  h3 { font-size: 16pt; color: #1e3a5f; margin-top: 20px; }
+  h4 { font-size: 14pt; color: #374151; margin-top: 15px; }
+  p { margin: 8px 0; text-align: justify; }
+  ul { margin: 8px 0 8px 20px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th { background-color: #1e40af; color: white; padding: 10px 14px; text-align: left; font-size: 13pt; }
+  td { border: 1px solid #d1d5db; padding: 8px 14px; font-size: 13pt; }
+  tr:nth-child(even) { background-color: #f0f4ff; }
+  .highlight { background-color: #fef3c7; padding: 10px 15px; border-left: 4px solid #f59e0b; margin: 12px 0; }
+  .info-box { background-color: #eff6ff; padding: 12px 15px; border-left: 4px solid #2563eb; margin: 12px 0; border-radius: 4px; }
+  .warning-box { background-color: #fef2f2; padding: 12px 15px; border-left: 4px solid #ef4444; margin: 12px 0; border-radius: 4px; }
+  .step { background-color: #f0fdf4; padding: 8px 12px; border-left: 3px solid #22c55e; margin: 6px 0; }
+  .badge-admin { background-color: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 4px; font-weight: bold; font-size: 12pt; }
+  .cover-subtitle { text-align: center; font-size: 16pt; color: #6b7280; margin-bottom: 5px; }
+  .cover-info { text-align: center; font-size: 12pt; color: #9ca3af; margin-top: 30px; }
+  .toc { background-color: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; margin: 20px 0; }
+  .toc a { color: #1e40af; text-decoration: none; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- ===== หน้าปก ===== -->
+<div style="text-align:center; padding-top:100px; padding-bottom:80px;">
+  <p style="font-size:14pt; color:#2563eb; font-weight:bold; letter-spacing:3px;">PMC PROJECT CONTROL ECOSYSTEM</p>
+  <h1 style="font-size:32pt; border:none; margin-top:20px;">คู่มือการใช้งานระบบ</h1>
+  <h1 style="font-size:28pt; border:none; color:#1e40af; margin-top:0;">สำหรับผู้ดูแลระบบ (Admin)</h1>
+  <p class="cover-subtitle">ระบบบริหารและควบคุมโครงการก่อสร้าง</p>
+  <p class="cover-subtitle">Smart Office Tower Project Management</p>
+  <br><br>
+  <p style="text-align:center; font-size:13pt; color:#6b7280;">เวอร์ชัน 1.0</p>
+  <p style="text-align:center; font-size:13pt; color:#6b7280;">วันที่จัดทำ: 7 มิถุนายน 2569</p>
+  <p style="text-align:center; font-size:13pt; color:#6b7280;">จัดทำโดย: ทีมพัฒนาระบบ PMC</p>
+</div>
+
+<!-- ===== สารบัญ ===== -->
+<div class="page-break"></div>
+<h1 style="font-size:22pt;">สารบัญ</h1>
+<div class="toc">
+  <p style="font-size:14pt;"><strong>1.</strong> ภาพรวมระบบ PMC</p>
+  <p style="font-size:14pt;"><strong>2.</strong> การเข้าสู่ระบบ (Login)</p>
+  <p style="font-size:14pt;"><strong>3.</strong> การลงทะเบียนผู้ใช้ใหม่ (Register)</p>
+  <p style="font-size:14pt;"><strong>4.</strong> หน้าแรก - Dashboard</p>
+  <p style="font-size:14pt;"><strong>5.</strong> ระบบจัดการเอกสาร (Document Management)</p>
+  <p style="font-size:14pt;"><strong>6.</strong> ระบบตรวจสอบหน้างาน QA/QC</p>
+  <p style="font-size:14pt;"><strong>7.</strong> ระบบ CCTV และ Drone Monitor</p>
+  <p style="font-size:14pt;"><strong>8.</strong> ตั้งค่าระบบ (System Configuration)</p>
+  <p style="font-size:14pt;"><strong>9.</strong> สรุปสิทธิ์การใช้งาน Admin vs User</p>
+</div>
+
+<!-- ===== 1. ภาพรวมระบบ ===== -->
+<div class="page-break"></div>
+<h2>1. ภาพรวมระบบ PMC</h2>
+
+<p>ระบบ PMC (Project Management & Control) เป็นระบบบริหารและควบคุมโครงการก่อสร้างแบบครบวงจร ออกแบบมาเพื่อรองรับการทำงานของทีมงานทุกระดับในโครงการก่อสร้าง ตั้งแต่ผู้จัดการโครงการ (Admin) ไปจนถึงผู้ใช้งานทั่วไป (User)</p>
+
+<h3>1.1 โมดูลหลักในระบบ</h3>
+<table>
+  <tr><th style="width:30%;">โมดูล</th><th>คำอธิบาย</th></tr>
+  <tr><td><strong>Dashboard</strong></td><td>ภาพรวมโครงการ แสดง KPI, ความคืบหน้า, Gantt Chart และสถานะเอกสาร</td></tr>
+  <tr><td><strong>Document Management</strong></td><td>ระบบจัดการเอกสาร RFA/RFI/VO/VR พร้อมระบบอนุมัติ</td></tr>
+  <tr><td><strong>QA/QC Inspection</strong></td><td>ระบบตรวจสอบหน้างาน พร้อมอัปโหลดรูปภาพก่อน-หลัง</td></tr>
+  <tr><td><strong>CCTV / Drone</strong></td><td>ระบบกล้องวงจรปิดและโดรนมอนิเตอร์หน้างาน</td></tr>
+  <tr><td><strong>System Config</strong></td><td>ตั้งค่าโปรเจกต์และแผนงาน (เฉพาะ Admin)</td></tr>
+</table>
+
+<h3>1.2 ระบบบทบาทผู้ใช้งาน (Role-Based Access)</h3>
+<div class="info-box">
+  <p><strong>ระบบแบ่งบทบาทผู้ใช้ออกเป็น 2 ระดับ:</strong></p>
+  <ul>
+    <li><span class="badge-admin">Admin</span> — ผู้ดูแลระบบ / Project Manager: มีสิทธิ์เต็มรูปแบบในทุกโมดูล</li>
+    <li><strong style="color:#2563eb;">User</strong> — ผู้ใช้งานทั่วไป: มีสิทธิ์จำกัดตามที่กำหนด</li>
+  </ul>
+</div>
+
+<h3>1.3 เมนูหลักในระบบ (Sidebar Navigation)</h3>
+<table>
+  <tr><th>ลำดับ</th><th>ชื่อเมนู</th><th>เส้นทาง (URL)</th><th>ไอคอน</th></tr>
+  <tr><td>1</td><td>หน้าแรก (Dashboard)</td><td>/dashboard</td><td>LayoutDashboard</td></tr>
+  <tr><td>2</td><td>การจัดการเอกสาร</td><td>/document</td><td>FileText</td></tr>
+  <tr><td>3</td><td>ตรวจหน้างาน / QA/QC</td><td>/qaqc</td><td>ClipboardCheck</td></tr>
+  <tr><td>4</td><td>CCTV / Drone Monitor</td><td>/cctv</td><td>Video</td></tr>
+  <tr><td>5</td><td>ตั้งค่าระบบ</td><td>/config</td><td>Settings</td></tr>
+</table>
+
+<!-- ===== 2. การเข้าสู่ระบบ ===== -->
+<div class="page-break"></div>
+<h2>2. การเข้าสู่ระบบ (Login)</h2>
+
+<h3>2.1 หน้าจอเข้าสู่ระบบ</h3>
+<p>หน้าเข้าสู่ระบบเป็นหน้าแรกที่ผู้ใช้จะพบเมื่อเปิดเว็บแอปพลิเคชัน (URL: <strong>/</strong>)</p>
+
+<h3>2.2 ขั้นตอนการเข้าสู่ระบบ</h3>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> เปิดเว็บเบราว์เซอร์แล้วไปที่ URL ของระบบ</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> กรอก <strong>อีเมล</strong> ในช่อง "อีเมล" (เช่น admin@company.com)</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> กรอก <strong>รหัสผ่าน</strong> ในช่อง "รหัสผ่าน"</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> (ทางเลือก) ติ๊กถูก "จดจำฉัน 30 วัน" หากต้องการให้ระบบจำข้อมูล</div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> กดปุ่ม <strong>"เข้าสู่ระบบ"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 6:</strong> ระบบจะนำท่านไปยังหน้า Dashboard อัตโนมัติ</div>
+
+<h3>2.3 กรณีเข้าสู่ระบบไม่สำเร็จ</h3>
+<div class="warning-box">
+  <p><strong>ข้อผิดพลาดที่อาจเกิดขึ้น:</strong></p>
+  <ul>
+    <li><strong>"Login failed"</strong> — อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง</li>
+    <li><strong>"Unable to connect to server"</strong> — ไม่สามารถเชื่อมต่อ Backend Server ได้ กรุณาติดต่อทีม IT</li>
+  </ul>
+</div>
+
+<!-- ===== 3. การลงทะเบียน ===== -->
+<div class="page-break"></div>
+<h2>3. การลงทะเบียนผู้ใช้ใหม่ (Register)</h2>
+
+<h3>3.1 ข้อมูลที่ต้องกรอก</h3>
+<table>
+  <tr><th style="width:25%;">ฟิลด์</th><th style="width:40%;">คำอธิบาย</th><th>ตัวอย่าง</th></tr>
+  <tr><td>ชื่อ</td><td>ชื่อจริงของผู้ใช้</td><td>สมชาย</td></tr>
+  <tr><td>นามสกุล</td><td>นามสกุลของผู้ใช้</td><td>ใจดี</td></tr>
+  <tr><td>อีเมล</td><td>อีเมลบริษัทหรือส่วนตัว</td><td>somchai@company.com</td></tr>
+  <tr><td>บริษัท / แผนก</td><td>ชื่อบริษัทหรือแผนกที่สังกัด</td><td>PMC Engineering Co.,Ltd.</td></tr>
+  <tr><td>ตำแหน่งในระบบ</td><td>เลือก Admin หรือ User</td><td>Admin (Project Manager)</td></tr>
+  <tr><td>รหัสผ่าน</td><td>รหัสผ่านที่ต้องการ</td><td>Password123</td></tr>
+  <tr><td>ยืนยันรหัสผ่าน</td><td>กรอกรหัสผ่านซ้ำอีกครั้ง</td><td>Password123</td></tr>
+</table>
+
+<h3>3.2 เงื่อนไขรหัสผ่าน</h3>
+<div class="highlight">
+  <p><strong>รหัสผ่านต้องมี:</strong></p>
+  <ul>
+    <li>✅ อย่างน้อย <strong>8 ตัวอักษร</strong></li>
+    <li>✅ ตัวพิมพ์ใหญ่ (A-Z) อย่างน้อย <strong>1 ตัว</strong></li>
+    <li>✅ ตัวเลข (0-9) อย่างน้อย <strong>1 ตัว</strong></li>
+  </ul>
+</div>
+
+<h3>3.3 ขั้นตอนการลงทะเบียน</h3>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> จากหน้า Login กดลิงก์ <strong>"สมัครสมาชิกที่นี่"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> กรอกข้อมูลทุกช่องตามตาราง 3.1</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> เลือกตำแหน่ง <strong>"Admin (Project Manager)"</strong> ในช่องตำแหน่งในระบบ</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> กดปุ่ม <strong>"สมัครสมาชิก"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> ระบบจะนำท่านกลับไปหน้า Login อัตโนมัติ</div>
+
+<!-- ===== 4. Dashboard ===== -->
+<div class="page-break"></div>
+<h2>4. หน้าแรก - Dashboard</h2>
+
+<h3>4.1 ภาพรวมหน้า Dashboard</h3>
+<p>หน้า Dashboard เป็นศูนย์กลางของระบบ แสดงข้อมูลสรุปโครงการทั้งหมดในหน้าเดียว</p>
+
+<h3>4.2 การเลือกโปรเจกต์</h3>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกที่ <strong>Project Selector</strong> ด้านบนของหน้า Dashboard</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> เลือกโปรเจกต์ที่ต้องการดูข้อมูล</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> ข้อมูลทั้งหมดจะอัปเดตตามโปรเจกต์ที่เลือก</div>
+
+<h3>4.3 ส่วนประกอบหลักของ Dashboard</h3>
+
+<h4>4.3.1 KPI Cards (การ์ดสรุปตัวชี้วัด)</h4>
+<table>
+  <tr><th>การ์ด</th><th>ข้อมูลที่แสดง</th><th>สีไอคอน</th></tr>
+  <tr><td>ความคืบหน้าจริง</td><td>เปอร์เซ็นต์ความคืบหน้าจริง เทียบกับแผนงาน</td><td>🔵 น้ำเงิน</td></tr>
+  <tr><td>กำลังคนหน้างาน</td><td>จำนวนคนงานในหน้างานปัจจุบัน + เวลาอัปเดตล่าสุด</td><td>🟠 ส้ม</td></tr>
+  <tr><td>เอกสารรออนุมัติ</td><td>จำนวน RFA/RFI ที่ยังรอการพิจารณา</td><td>🟡 เหลือง</td></tr>
+  <tr><td>ความปลอดภัย</td><td>คะแนนความปลอดภัย + จำนวนอุบัติเหตุ</td><td>🟢 เขียว</td></tr>
+</table>
+
+<h4>4.3.2 เปรียบเทียบแผนงาน (Plan vs Actual)</h4>
+<p>ส่วนนี้แสดงการเปรียบเทียบระหว่างแผนงานสะสม (Planned) กับผลงานจริง (Actual) ในรูปแบบ Progress Bar</p>
+<div class="info-box">
+  <p><strong>⚠️ สำหรับ Admin:</strong> สามารถ<strong>เปลี่ยนสถานะแผนงาน</strong>ได้โดยคลิกที่ Dropdown สถานะในแต่ละรายการ</p>
+  <p><strong>สถานะที่เลือกได้:</strong></p>
+  <ul>
+    <li><strong>ยังไม่เริ่ม</strong> — งานยังไม่ได้เริ่มดำเนินการ</li>
+    <li><strong>ดำเนินการ</strong> — กำลังดำเนินงานอยู่</li>
+    <li><strong>สำเร็จ</strong> — งานเสร็จสมบูรณ์แล้ว</li>
+    <li><strong>ล่าช้า</strong> — งานดำเนินการล่าช้ากว่าแผน</li>
+  </ul>
+</div>
+
+<h4>4.3.3 สรุปสถานะเอกสาร</h4>
+<p>แสดงจำนวนเอกสารแยกตามประเภท (RFA, RFI, VO) พร้อมจำนวนที่รอดำเนินการและอนุมัติแล้ว</p>
+
+<h4>4.3.4 Gantt Chart</h4>
+<p>แสดงแผนงานในรูปแบบ Gantt Chart เพื่อให้เห็นภาพรวมไทม์ไลน์ของทุกงาน</p>
+
+<!-- ===== 5. ระบบจัดการเอกสาร ===== -->
+<div class="page-break"></div>
+<h2>5. ระบบจัดการเอกสาร (Document Management)</h2>
+
+<h3>5.1 ประเภทเอกสารในระบบ</h3>
+<table>
+  <tr><th>ประเภท</th><th>ชื่อเต็ม</th><th>คำอธิบาย</th></tr>
+  <tr><td><strong>RFA</strong></td><td>Request for Approval</td><td>คำขออนุมัติ — แบ่งย่อยเป็น General, Material, Shop Drawing</td></tr>
+  <tr><td><strong>RFI</strong></td><td>Request for Inspection</td><td>คำขอตรวจสอบ</td></tr>
+  <tr><td><strong>VO</strong></td><td>Variation Order</td><td>คำสั่งเปลี่ยนแปลง</td></tr>
+  <tr><td><strong>VR</strong></td><td>Verification Report</td><td>รายงานตรวจรับ</td></tr>
+</table>
+
+<h3>5.2 ประเภทย่อย RFA และสาขา (Discipline)</h3>
+<table>
+  <tr><th>ประเภทย่อย (SubType)</th><th>สาขา (Discipline) ที่เลือกได้</th></tr>
+  <tr><td>General</td><td>ไม่มีสาขาย่อย</td></tr>
+  <tr><td>Material</td><td>AC, AR, EE, SN, ST</td></tr>
+  <tr><td>Shop Drawing</td><td>AC, AR, EE, FP, SN, ST</td></tr>
+</table>
+
+<h3>5.3 สถานะเอกสาร</h3>
+<table>
+  <tr><th>สถานะ</th><th>ความหมาย</th><th>สี Badge</th></tr>
+  <tr><td>PENDING</td><td>รอดำเนินการ</td><td>🔵 น้ำเงิน</td></tr>
+  <tr><td>REVIEWING</td><td>กำลังตรวจสอบ</td><td>🟡 เหลือง</td></tr>
+  <tr><td>APPROVED</td><td>อนุมัติแล้ว</td><td>🟢 เขียว</td></tr>
+  <tr><td>REJECTED</td><td>ไม่อนุมัติ</td><td>🔴 แดง</td></tr>
+</table>
+
+<h3>5.4 การสร้างเอกสารใหม่ (ยื่นคำขอ)</h3>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกปุ่ม <strong>"ยื่นคำขอใหม่"</strong> ที่มุมขวาบน</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> กรอกเลขที่เอกสาร เช่น NKC-STI-NDVO-GL-057-2568</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> เลือกประเภทเอกสาร (RFA / RFI / VO / VR)</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> หากเลือก RFA → เลือกประเภทย่อย (General / Material / Shop Drawing)</div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> หากเลือก Material หรือ Shop Drawing → เลือกสาขา (Discipline)</div>
+<div class="step"><strong>ขั้นตอนที่ 6:</strong> กรอกหัวข้อ/รายละเอียด และชื่อผู้ยื่น</div>
+<div class="step"><strong>ขั้นตอนที่ 7:</strong> (ทางเลือก) แนบไฟล์ PDF</div>
+<div class="step"><strong>ขั้นตอนที่ 8:</strong> กดปุ่ม <strong>"บันทึกเอกสาร"</strong></div>
+
+<h3>5.5 การค้นหาและกรองเอกสาร</h3>
+<p>ระบบมีตัวกรองหลายมิติ ได้แก่:</p>
+<ul>
+  <li><strong>ค้นหาด้วยข้อความ:</strong> ค้นหาด้วยเลขที่เอกสาร, หัวข้อ, หรือชื่อผู้ยื่น</li>
+  <li><strong>กรองตามประเภท:</strong> RFA / RFI / VO / VR</li>
+  <li><strong>กรองตามประเภทย่อย:</strong> General / Material / Shop Drawing</li>
+  <li><strong>กรองตามสาขา:</strong> AR, ST, EE, SN, AC, ME, FP, ID</li>
+  <li><strong>กรองตามสถานะ:</strong> PENDING / REVIEWING / APPROVED / REJECTED</li>
+</ul>
+
+<h3>5.6 การจัดการเอกสาร (สิทธิ์ Admin เท่านั้น)</h3>
+
+<div class="highlight">
+  <p><strong>🔑 ฟังก์ชันเฉพาะ Admin:</strong></p>
+</div>
+
+<h4>5.6.1 การเปลี่ยนสถานะเอกสาร</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกปุ่ม <strong>⋮</strong> (สามจุด) ที่ท้ายแถวเอกสาร</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> เลือก <strong>"เปลี่ยนสถานะ"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> เลือกสถานะใหม่ (PENDING / REVIEWING / APPROVED / REJECTED)</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> ระบบจะอัปเดตสถานะทันที</div>
+
+<h4>5.6.2 การลบเอกสาร</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกปุ่ม <strong>⋮</strong> (สามจุด) ที่ท้ายแถวเอกสาร</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> เลือก <strong>"ลบเอกสาร"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> ยืนยันการลบใน Modal ที่ปรากฏขึ้น</div>
+<div class="warning-box">
+  <p><strong>⚠️ คำเตือน:</strong> การลบเอกสารไม่สามารถยกเลิกได้ กรุณาตรวจสอบให้แน่ใจก่อนลบ</p>
+</div>
+
+<h4>5.6.3 การดูรายละเอียดเอกสาร</h4>
+<p>คลิกที่เลขที่เอกสาร (ลิงก์สีน้ำเงิน) หรือเลือก "ดูรายละเอียด" จากเมนู ⋮ เพื่อเปิดหน้าต่างรายละเอียดที่แสดง:</p>
+<ul>
+  <li>เลขที่เอกสาร, ประเภท, หัวข้อ, ผู้ยื่น</li>
+  <li>สถานะปัจจุบัน, วันที่สร้าง, วันที่อัปเดตล่าสุด</li>
+  <li>ไฟล์ PDF แนบ (ถ้ามี) — สามารถเปิดดูได้</li>
+</ul>
+
+<!-- ===== 6. ระบบ QA/QC ===== -->
+<div class="page-break"></div>
+<h2>6. ระบบตรวจสอบหน้างาน QA/QC</h2>
+
+<h3>6.1 ภาพรวมโมดูล QA/QC</h3>
+<p>โมดูล QA/QC ใช้สำหรับบันทึกผลการตรวจสอบหน้างาน ติดตามรายการ Punch List พร้อมรองรับรูปภาพก่อน-หลังแก้ไข</p>
+
+<h3>6.2 สถานะการตรวจสอบ</h3>
+<table>
+  <tr><th>สถานะ</th><th>ป้ายชื่อ</th><th>ความหมาย</th></tr>
+  <tr><td>PENDING</td><td>รอดำเนินการ</td><td>สร้างรายการแล้วรอตรวจสอบ</td></tr>
+  <tr><td>IN PROGRESS</td><td>กำลังดำเนินการ</td><td>กำลังดำเนินการตรวจสอบอยู่</td></tr>
+  <tr><td>COMPLETED</td><td>เสร็จสมบูรณ์</td><td>ตรวจสอบเสร็จแล้ว ผ่านเกณฑ์</td></tr>
+  <tr><td>REJECTED</td><td>ไม่ผ่าน</td><td>ตรวจสอบแล้ว ไม่ผ่านเกณฑ์</td></tr>
+</table>
+
+<h3>6.3 การสร้างรายการตรวจสอบใหม่</h3>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกปุ่ม <strong>"เพิ่มรายการ"</strong> หรือ <strong>"เริ่มตรวจสอบใหม่"</strong></div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> กรอกชื่อรายการตรวจสอบ (เช่น "งานโครงสร้างชั้น 12 - Concrete Pouring")</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> เลือกโซน (Zone A / B / C)</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> กรอกชื่อผู้ตรวจสอบ</div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> กรอกจำนวน Punch List (ถ้ามี)</div>
+<div class="step"><strong>ขั้นตอนที่ 6:</strong> อัปโหลดรูปภาพก่อน/หลังแก้ไข (ขนาดไม่เกิน 5MB ต่อรูป)</div>
+<div class="step"><strong>ขั้นตอนที่ 7:</strong> กดปุ่ม <strong>"บันทึก"</strong></div>
+
+<h3>6.4 การเปลี่ยนสถานะ (เฉพาะ Admin)</h3>
+<div class="highlight">
+  <p><strong>🔑 เฉพาะ Admin เท่านั้น</strong> ที่สามารถเปลี่ยนสถานะรายการตรวจสอบได้:</p>
+</div>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกที่ <strong>Badge สถานะ</strong> ของรายการที่ต้องการเปลี่ยน</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> เลือกสถานะใหม่จาก Dropdown (PENDING / IN PROGRESS / COMPLETED / REJECTED)</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> ระบบจะอัปเดตสถานะและสรุป Dashboard อัตโนมัติ</div>
+
+<h3>6.5 การแก้ไขรายการตรวจสอบ</h3>
+<div class="info-box">
+  <p><strong>Admin</strong> สามารถแก้ไขได้ทุกรายการ ไม่ว่าสถานะจะเป็นอะไร</p>
+  <p><strong>User</strong> สามารถแก้ไขได้เฉพาะรายการที่มีสถานะ <strong>PENDING</strong> เท่านั้น</p>
+</div>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกไอคอน ✏️ (ดินสอ) ที่รายการที่ต้องการ</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> แก้ไขข้อมูลที่ต้องการ (ชื่อ, โซน, ผู้ตรวจสอบ, Punch List, รูปภาพ)</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> กดปุ่ม <strong>"บันทึกการแก้ไข"</strong></div>
+
+<h3>6.6 การอัปโหลดรูปหลังแก้ไข (After Image)</h3>
+<p>สำหรับรายการที่มีรูปก่อนแก้ไขแต่ยังไม่มีรูปหลังแก้ไข จะมีปุ่ม "เพิ่มรูป" ให้คลิกเพื่ออัปโหลดรูปหลังแก้ไข</p>
+
+<h3>6.7 แผงควบคุม Punch List (ด้านขวา)</h3>
+<p>แสดงสรุปข้อมูลการตรวจสอบทั้งหมด ได้แก่:</p>
+<ul>
+  <li><strong>จำนวนรายการรอแก้ไข</strong></li>
+  <li><strong>อัตราแก้ไขสำเร็จ (%)</strong></li>
+  <li><strong>จำนวนแยกตามสถานะ:</strong> เสร็จสมบูรณ์, รอดำเนินการ, กำลังดำเนินการ, ไม่ผ่าน</li>
+</ul>
+
+<h3>6.8 การกรองด้วยโซน</h3>
+<p>คลิกปุ่ม <strong>"ตัวกรอง"</strong> เพื่อกรองข้อมูลตามโซน: ทุกโซน, Zone A, Zone B, Zone C</p>
+
+<!-- ===== 7. ระบบ CCTV ===== -->
+<div class="page-break"></div>
+<h2>7. ระบบ CCTV และ Drone Monitor</h2>
+
+<h3>7.1 ภาพรวม</h3>
+<p>โมดูล CCTV / Drone Monitor ใช้สำหรับดูภาพจากกล้องวงจรปิดและโดรนในพื้นที่ก่อสร้างแบบเรียลไทม์</p>
+
+<h3>7.2 กล้อง CCTV</h3>
+<p>ระบบแสดงผลกล้องวงจรปิด 4 ตัว ในรูปแบบ Grid 2x2:</p>
+<table>
+  <tr><th>กล้อง</th><th>โซน</th><th>ตำแหน่ง</th></tr>
+  <tr><td>CAM-01</td><td>ZONE A</td><td>MAIN ENTRANCE — ทางเข้าหลัก</td></tr>
+  <tr><td>CAM-02</td><td>ZONE B</td><td>MATERIAL STORAGE — คลังวัสดุ</td></tr>
+  <tr><td>CAM-03</td><td>ZONE C</td><td>CRANE TOWER 1 — เครนหอคอย</td></tr>
+  <tr><td>CAM-04</td><td>—</td><td>LOADING BAY - SOUTH — ท่าขนส่ง</td></tr>
+</table>
+
+<h3>7.3 แผงควบคุม Drone</h3>
+<p>แผง Drone OPS (Dark Theme) แสดง:</p>
+<ul>
+  <li><strong>ภาพ Aerial View:</strong> ภาพถ่ายจากโดรนแบบ Live พร้อม HUD Overlay</li>
+  <li><strong>แบตเตอรี่โดรน:</strong> แสดงระดับแบตเตอรี่ปัจจุบัน</li>
+  <li><strong>ความสูง:</strong> ระดับความสูงที่โดรนบินอยู่</li>
+  <li><strong>พิกัด GPS:</strong> ตำแหน่ง GPS ของโดรน</li>
+  <li><strong>ปุ่มถ่ายภาพ:</strong> "ถ่ายภาพมุมสูงความละเอียดสูง"</li>
+</ul>
+
+<h3>7.4 บันทึกการทำงาน (Operation Log)</h3>
+<p>แสดง Log การทำงานของโดรนตามเวลา เช่น การขึ้นบิน, การสำรวจโซน, แจ้งเตือนสภาพอากาศ</p>
+
+<!-- ===== 8. ตั้งค่าระบบ ===== -->
+<div class="page-break"></div>
+<h2>8. ตั้งค่าระบบ (System Configuration)</h2>
+
+<div class="warning-box">
+  <p><strong>⚠️ หน้านี้เป็นหน้าสำหรับ Admin โดยเฉพาะ</strong> — ใช้สำหรับจัดการโปรเจกต์และแผนงานทั้งหมดในระบบ</p>
+</div>
+
+<h3>8.1 การจัดการโปรเจกต์</h3>
+
+<h4>8.1.1 การสร้างโปรเจกต์ใหม่</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกปุ่ม <strong>"เพิ่มโปรเจกต์"</strong> (สีน้ำเงิน)</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> กรอกชื่อโปรเจกต์ (จำเป็น)</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> เลือกวันเริ่มต้นและวันสิ้นสุด</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> กรอกจำนวนกำลังคน</div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> กดปุ่ม <strong>"บันทึก"</strong></div>
+
+<h4>8.1.2 การแก้ไขโปรเจกต์</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกไอคอน ✏️ ที่แถวโปรเจกต์ที่ต้องการแก้ไข</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> แก้ไขข้อมูลที่ต้องการ</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> กดปุ่ม <strong>"บันทึก"</strong></div>
+
+<h4>8.1.3 การลบโปรเจกต์</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกไอคอน 🗑️ ที่แถวโปรเจกต์ที่ต้องการลบ</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> ยืนยันการลบใน Modal ที่ปรากฏ</div>
+<div class="warning-box">
+  <p><strong>⚠️ คำเตือน:</strong> การลบโปรเจกต์จะลบข้อมูลทั้งหมดของโปรเจกต์นั้น รวมถึงแผนงานทั้งหมด</p>
+</div>
+
+<h3>8.2 การจัดการแผนงาน (Plans)</h3>
+
+<h4>8.2.1 การดูแผนงานของโปรเจกต์</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> คลิกไอคอน <strong>▼</strong> (ลูกศรลง) ที่แถวโปรเจกต์ที่ต้องการ</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> ระบบจะขยายแสดงรายการแผนงานทั้งหมดของโปรเจกต์นั้น</div>
+
+<h4>8.2.2 การเพิ่มแผนงานใหม่</h4>
+<div class="step"><strong>ขั้นตอนที่ 1:</strong> ขยายโปรเจกต์ที่ต้องการเพิ่มแผนงาน</div>
+<div class="step"><strong>ขั้นตอนที่ 2:</strong> ที่ฟอร์ม "เพิ่มแผนงาน" ด้านล่าง เลือกสีแผนงาน</div>
+<div class="step"><strong>ขั้นตอนที่ 3:</strong> กรอกชื่อแผนงาน (จำเป็น)</div>
+<div class="step"><strong>ขั้นตอนที่ 4:</strong> เลือกวันเริ่มต้นและวันสิ้นสุด (จำเป็น)</div>
+<div class="step"><strong>ขั้นตอนที่ 5:</strong> กรอกหมายเหตุ (ถ้ามี)</div>
+<div class="step"><strong>ขั้นตอนที่ 6:</strong> กดปุ่ม <strong>"เพิ่ม"</strong></div>
+
+<h4>8.2.3 สีแผนงานที่เลือกได้</h4>
+<table>
+  <tr><th>สี</th><th>รหัสสี</th><th>ชื่อ</th></tr>
+  <tr><td style="background-color:#93c5fd; width:40px;">&nbsp;</td><td>#93c5fd</td><td>ฟ้า (หมวดหัวข้อ)</td></tr>
+  <tr><td style="background-color:#2563eb;">&nbsp;</td><td>#2563eb</td><td>น้ำเงิน (งานหลัก)</td></tr>
+  <tr><td style="background-color:#ef4444;">&nbsp;</td><td>#ef4444</td><td>แดง (งานด่วน/วิกฤต)</td></tr>
+  <tr><td style="background-color:#f97316;">&nbsp;</td><td>#f97316</td><td>ส้ม</td></tr>
+  <tr><td style="background-color:#eab308;">&nbsp;</td><td>#eab308</td><td>เหลือง</td></tr>
+  <tr><td style="background-color:#22c55e;">&nbsp;</td><td>#22c55e</td><td>เขียว</td></tr>
+</table>
+
+<h4>8.2.4 การแก้ไข/ลบแผนงาน</h4>
+<ul>
+  <li><strong>แก้ไข:</strong> คลิกไอคอน ✏️ → แก้ไขข้อมูล → กดปุ่ม "อัปเดต"</li>
+  <li><strong>ลบ:</strong> คลิกไอคอน 🗑️ ระบบจะลบแผนงานนั้นทันที</li>
+</ul>
+
+<h3>8.3 ข้อมูลตัวอย่าง (Seed Data)</h3>
+<p>คลิกปุ่ม <strong>"เพิ่มข้อมูลตัวอย่าง"</strong> (สีเขียว) เพื่อสร้างโปรเจกต์และแผนงานตัวอย่างอัตโนมัติ เหมาะสำหรับการทดสอบระบบ</p>
+
+<!-- ===== 9. สรุปสิทธิ์ ===== -->
+<div class="page-break"></div>
+<h2>9. สรุปสิทธิ์การใช้งาน Admin vs User</h2>
+
+<table>
+  <tr>
+    <th style="width:40%;">ฟังก์ชัน</th>
+    <th style="width:30%; text-align:center;">Admin ✅</th>
+    <th style="width:30%; text-align:center;">User 👤</th>
+  </tr>
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">การเข้าสู่ระบบ</td></tr>
+  <tr><td>เข้าสู่ระบบ / ลงทะเบียน</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">Dashboard</td></tr>
+  <tr><td>ดู Dashboard และ KPI</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>เลือก/เปลี่ยนโปรเจกต์</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>เปลี่ยนสถานะแผนงาน</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ดู Gantt Chart</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">ระบบจัดการเอกสาร</td></tr>
+  <tr><td>ยื่นคำขอ / สร้างเอกสารใหม่</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ดูรายการเอกสาร</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ค้นหาและกรองเอกสาร</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ดูรายละเอียดเอกสาร</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ดาวน์โหลด PDF แนบ</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td><strong>เปลี่ยนสถานะเอกสาร</strong></td><td style="text-align:center;">✅</td><td style="text-align:center; color:red;">❌</td></tr>
+  <tr><td><strong>ลบเอกสาร</strong></td><td style="text-align:center;">✅</td><td style="text-align:center; color:red;">❌</td></tr>
+  
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">ระบบ QA/QC</td></tr>
+  <tr><td>ดูรายการตรวจสอบ</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>สร้างรายการตรวจสอบใหม่</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>กรองตามโซน</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>อัปโหลดรูปก่อน/หลังแก้ไข</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td><strong>เปลี่ยนสถานะการตรวจสอบ</strong></td><td style="text-align:center;">✅</td><td style="text-align:center; color:red;">❌</td></tr>
+  <tr><td>แก้ไขรายการ (ทุกสถานะ)</td><td style="text-align:center;">✅</td><td style="text-align:center; color:red;">❌</td></tr>
+  <tr><td>แก้ไขรายการ (เฉพาะ PENDING)</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">CCTV / Drone</td></tr>
+  <tr><td>ดูกล้อง CCTV</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  <tr><td>ดู Drone Monitor</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+  
+  <tr><td colspan="3" style="background-color:#1e40af; color:white; font-weight:bold;">ตั้งค่าระบบ</td></tr>
+  <tr><td>สร้าง/แก้ไข/ลบ โปรเจกต์</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅ *</td></tr>
+  <tr><td>สร้าง/แก้ไข/ลบ แผนงาน</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅ *</td></tr>
+  <tr><td>เพิ่มข้อมูลตัวอย่าง (Seed)</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅ *</td></tr>
+</table>
+
+<p style="font-size:12pt; color:#6b7280;">* หน้าตั้งค่าระบบเข้าถึงได้ทุกบทบาท แต่แนะนำให้เฉพาะ Admin ใช้งาน</p>
+
+<br><br>
+<div style="text-align:center; border-top:2px solid #e5e7eb; padding-top:20px; color:#9ca3af; font-size:11pt;">
+  <p>© 2024 PMC Project Control Ecosystem — คู่มือผู้ดูแลระบบ (Admin) v1.0</p>
+  <p>จัดทำโดย ทีมพัฒนาระบบ PMC</p>
+</div>
+
+</body>
+</html>

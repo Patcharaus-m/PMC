@@ -7,7 +7,6 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
 // ============ Auth ============
 
 export const loginUser = async (email, password) => {
@@ -87,12 +86,14 @@ export const createDocument = async (data) => {
 };
 
 export const updateDocumentStatus = async (id, status) => {
-  const response = await api.put(`/documents/${id}/status`, { status });
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const response = await api.put(`/documents/${id}/status`, { status, userRole: user.role || 'User' });
   return response.data;
 };
 
 export const deleteDocument = async (id) => {
-  const response = await api.delete(`/documents/${id}`);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const response = await api.delete(`/documents/${id}`, { params: { userRole: user.role || 'User' } });
   return response.data;
 };
 
@@ -128,7 +129,8 @@ export const createInspection = async (data) => {
 };
 
 export const updateInspection = async (id, data) => {
-  const response = await api.put(`/inspections/${id}`, data);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const response = await api.put(`/inspections/${id}`, { ...data, userRole: user.role || 'User' });
   return response.data;
 };
 
