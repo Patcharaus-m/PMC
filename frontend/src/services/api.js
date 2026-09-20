@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance — uses VITE_BACKEND_URL for local dev, falls back to Render production
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_URL || 'http://203.170.129.155'}/api`, //VPS:http://203.170.129.155// Render:"https://pmc-alwb.onrender.com"
+  baseURL: `${import.meta.env.VITE_BACKEND_URL || 'https://pmc-stream.duckdns.org'}/api`, //VPS:https://pmc-stream.duckdns.org// Render:"https://pmc-alwb.onrender.com"
 
   headers: {
     'Content-Type': 'application/json',

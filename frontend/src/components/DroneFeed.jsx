@@ -4,7 +4,7 @@ import { Maximize2, Wifi, WifiOff, Loader2, Radio, Info, Copy, Check } from 'luc
 // Backend host resolver (supports LAN / mobile hotspot / localhost)
 const getBackendHost = () => {
   if (import.meta.env.VITE_BACKEND_URL) return import.meta.env.VITE_BACKEND_URL;
-  return 'http://203.170.129.155';
+  return 'https://pmc-stream.duckdns.org';
 };
 
 const getWsUrl = () => {

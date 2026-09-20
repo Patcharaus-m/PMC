@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Camera, Play, Square, Maximize2, Wifi, WifiOff, Loader2, Settings, Link, RefreshCw, AlertTriangle } from 'lucide-react';
 
 // Backend host — override with VITE_BACKEND_URL for local dev (e.g. http://localhost:3000)
-const BACKEND_HOST = import.meta.env.VITE_BACKEND_URL || 'http://203.170.129.155';
+const BACKEND_HOST = import.meta.env.VITE_BACKEND_URL || 'https://pmc-stream.duckdns.org';
 const WS_BASE = BACKEND_HOST.replace(/^http/, 'ws') + '/stream';
 const DEFAULT_RTSP = 'rtsp://somchai:Test1234@192.168.137.249:554/stream1';
 
