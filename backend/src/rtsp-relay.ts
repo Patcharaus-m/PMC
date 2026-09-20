@@ -198,8 +198,8 @@ function spawnFFmpegForClient(
  * Attach RTSP relay WebSocket to an existing HTTP server.
  * WebSocket path: /stream
  */
-export function startRtspRelay(server: Server) {
-  const wss = new WebSocketServer({ server, path: "/stream" });
+export function startRtspRelay(_server?: Server): WebSocketServer {
+  const wss = new WebSocketServer({ noServer: true });
 
   // Track per-client state
   const clients = new Map<WebSocket, ClientState>();
@@ -283,4 +283,5 @@ export function startRtspRelay(server: Server) {
   console.log(`    Default RTSP: ${DEFAULT_RTSP_URL}`);
   console.log(`    Auto-reconnect: every ${RECONNECT_INTERVAL_MS / 1000}s`);
   console.log(`    Usage: wss://your-server/stream?url=rtsp://user:pass@ip:554/stream`);
+  return wss;
 }

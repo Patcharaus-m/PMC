@@ -5,6 +5,7 @@ import { connectDB } from "./database/index.js";
 import middleware from "./middleware/index.js";
 import routes from "./routers/index.js";
 import { startRtspRelay } from "./rtsp-relay.js";
+import { startDroneRelay, getDroneInfo } from "./drone-relay.js";
 
 const app = express();
 
@@ -22,6 +23,11 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // API Routes
 app.use("/api", routes);
 
+// Drone status & RTMP connection info
+app.get("/api/drone/info", (_req, res) => {
+  res.json(getDroneInfo());
+});
+
 // Health check
 app.get("/", (_req, res) => {
   res.json({ message: "PMC Backend API is running" });
@@ -34,7 +40,28 @@ connectDB().then(() => {
   const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 
-    // Start RTSP → WebSocket relay for CCTV (attached to same HTTP server)
-    startRtspRelay(server);
+    // Start RTSP → WebSocket relay for CCTV (noServer mode)
+    const rtspWss = startRtspRelay();
+
+    // Start RTMP → WebSocket relay for Drone (noServer mode)
+    const droneWss = startDroneRelay();
+
+    // Route WebSocket upgrade requests to the appropriate relay
+    server.on("upgrade", (req, socket, head) => {
+      const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+      const pathname = url.pathname;
+
+      if (pathname === "/stream") {
+        rtspWss.handleUpgrade(req, socket, head, (ws) => {
+          rtspWss.emit("connection", ws, req);
+        });
+      } else if (pathname === "/drone-stream") {
+        droneWss.handleUpgrade(req, socket, head, (ws) => {
+          droneWss.emit("connection", ws, req);
+        });
+      } else {
+        socket.destroy();
+      }
+    });
   });
 });

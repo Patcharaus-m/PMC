@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, Clock, Menu, Navigation, Battery } from 'lucide-react';
+import { User, Clock, Menu, Navigation } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import CameraFeed from '../components/CameraFeed';
+import DroneFeed from '../components/DroneFeed';
 import HeaderProfile from '../components/HeaderProfile';
 
 const CctvPage = () => {
@@ -80,68 +81,17 @@ const CctvPage = () => {
         {/* --- Drone & Logs Row (Below Cameras) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 pb-10">
           
-          {/* DRONE OPS PANEL (Dark Theme) */}
+          {/* DRONE OPS PANEL (Dark Theme) — Live Stream */}
           <div className="bg-[#121826] rounded-2xl border border-gray-800 p-4 lg:p-6 text-white flex flex-col">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
                <div className="flex items-center gap-2">
                  <div className="bg-blue-600 p-1.5 rounded-lg"><Navigation size={18} fill="white"/></div>
                  <span className="font-black text-sm lg:text-base tracking-widest italic">DRONE OPS</span>
                </div>
-               <span className="text-[10px] bg-green-900/30 text-green-400 px-2 py-0.5 rounded border border-green-800 font-bold tracking-wider">ออนไลน์</span>
             </div>
             
-            {/* Drone Aerial View */}
-            <div className="aspect-video bg-[#1a2133] rounded-xl border border-gray-800 relative overflow-hidden mb-6 group">
-               {/* ภาพถ่ายจากโดรน */}
-               <img src="/cctv/drone_aerial.png" alt="Drone Aerial View" className="absolute inset-0 w-full h-full object-cover" />
-               {/* HUD Overlay */}
-               <div className="absolute inset-0 pointer-events-none">
-                 {/* Crosshair center */}
-                 <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-16 h-16 border border-blue-400/40 rounded-full"></div>
-                   <div className="absolute w-8 h-8 border border-blue-400/60 rounded-full"></div>
-                   <div className="absolute w-[1px] h-10 bg-blue-400/30"></div>
-                   <div className="absolute w-10 h-[1px] bg-blue-400/30"></div>
-                 </div>
-                 {/* Corner brackets */}
-                 <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-blue-400/50 rounded-tl-sm"></div>
-                 <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-blue-400/50 rounded-tr-sm"></div>
-                 <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-blue-400/50 rounded-bl-sm"></div>
-                 <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-blue-400/50 rounded-br-sm"></div>
-                 {/* Top info bar */}
-                 <div className="absolute top-2 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                   <span className="text-[8px] font-mono text-blue-300/80 bg-black/40 px-2 py-0.5 rounded">ALT 45m</span>
-                   <span className="text-[8px] font-mono text-green-400/80 bg-black/40 px-2 py-0.5 rounded flex items-center gap-1">
-                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> LIVE
-                   </span>
-                 </div>
-                 {/* GPS pin */}
-                 <div className="absolute bottom-3 left-3 text-[7px] font-mono text-blue-200/70 bg-black/40 px-2 py-1 rounded">
-                   13.7563°N, 100.5018°E
-                 </div>
-               </div>
-            </div>
-
-            {/* Drone Stats */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="bg-[#1a2133] p-3 rounded-xl border border-gray-800">
-                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase"><Battery size={12}/> แบตเตอรี่</p>
-                <p className="text-xl lg:text-2xl font-black text-blue-400">82%</p>
-              </div>
-              <div className="bg-[#1a2133] p-3 rounded-xl border border-gray-800">
-                <p className="text-[8px] lg:text-[10px] text-gray-400 mb-1 flex items-center gap-1 font-bold tracking-wider uppercase">ความสูง</p>
-                <p className="text-xl lg:text-2xl font-black">45m</p>
-              </div>
-            </div>
-
-            <div className="text-center mb-6">
-               <p className="text-[8px] lg:text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">พิกัด GPS</p>
-               <p className="text-xs lg:text-sm font-mono text-blue-300">13.7563° N, 100.5018° E</p>
-            </div>
-
-            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black italic tracking-wider py-3 lg:py-4 rounded-xl transition-colors text-xs lg:text-sm">
-              ถ่ายภาพมุมสูงความละเอียดสูง
-            </button>
+            {/* Live Drone Feed — auto-connects to WebSocket */}
+            <DroneFeed />
           </div>
 
           {/* OPERATION LOG PANEL (Light Theme) */}
