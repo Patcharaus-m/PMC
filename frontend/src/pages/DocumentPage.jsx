@@ -260,16 +260,14 @@ const DocumentPage = () => {
               <p className="text-xs text-gray-400 mt-1">ระบบติดตามสถานะเอกสารคำขอและการอนุมัติโครงการ</p>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
-              {documents.length === 0 && !loading && (
-                <button
-                  onClick={handleSeed}
-                  disabled={formSubmitting}
-                  className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
-                >
-                  <Database size={18} />
-                  {formSubmitting ? 'กำลังโหลด...' : 'เพิ่มข้อมูลตัวอย่าง'}
-                </button>
-              )}
+              <button
+                onClick={handleSeed}
+                disabled={formSubmitting}
+                className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors disabled:opacity-50"
+              >
+                <Database size={18} />
+                {formSubmitting ? 'กำลังโหลด...' : 'เพิ่มข้อมูลตัวอย่าง'}
+              </button>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-colors w-full sm:w-auto justify-center"
