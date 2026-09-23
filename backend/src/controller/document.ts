@@ -239,7 +239,7 @@ export const seedDocuments = async (req: Request, res: Response): Promise<void> 
       { documentNo: "RFA-2026-009", type: "RFA", subType: "Material",   discipline: "AC",  subject: "ขออนุมัติเครื่องปรับอากาศ VRF ยี่ห้อ Daikin ขนาด 48,000 BTU",          status: "Pending",   originatorName: "กมล แอร์เย็น" },
       { documentNo: "RFA-2026-010", type: "RFA", subType: "Material",   discipline: "ME",  subject: "ขออนุมัติปั๊มน้ำดับเพลิง Fire Pump ขนาด 500 GPM",                       status: "Reviewing", originatorName: "วรพจน์ เครื่องกล" },
       { documentNo: "RFA-2026-011", type: "RFA", subType: "Material",   discipline: "FP",  subject: "ขออนุมัติหัวสปริงเกลอร์ดับเพลิงแบบ Pendant K-Factor 5.6",               status: "Approved",  originatorName: "ชาญชัย เซฟตี้" },
-      { documentNo: "RFA-2026-012", type: "RFA", subType: "Material",   discipline: "ST",  subject: "ขออนุมัติคอนกรีตผสมเสร็จ ชั้นคุณภาพ 350 ksc สำหรับแผ่นพื้น",          status: "Rejected",  originatorName: "อภิรัตน์ วิศวโยธา" },
+      { documentNo: "RFA-2026-012", type: "RFA", subType: "Material",   discipline: "ID",  subject: "ขออนุมัติวอลเปเปอร์ห้องประชุมใหญ่ชั้น 15 (Vinyl Wallpaper)",           status: "Rejected",  originatorName: "ปิยะ อินทีเรีย" },
 
       // ─── RFA · Shop Drawing × 8 Discipline ───────────────────────────────────────
       { documentNo: "RFA-2026-013", type: "RFA", subType: "Shop Drawing", discipline: "AR", subject: "Shop Drawing ผนังกระจก Curtain Wall อาคาร A ด้านทิศใต้",               status: "Approved",  originatorName: "นิติพงษ์ สถาปนิก" },
@@ -249,7 +249,7 @@ export const seedDocuments = async (req: Request, res: Response): Promise<void> 
       { documentNo: "RFA-2026-017", type: "RFA", subType: "Shop Drawing", discipline: "AC", subject: "Shop Drawing แนวท่อลม Duct Layout ระบบ AHU ชั้น 3",                     status: "Approved",  originatorName: "ธีรพล แอร์ซิสเท็ม" },
       { documentNo: "RFA-2026-018", type: "RFA", subType: "Shop Drawing", discipline: "ME", subject: "Shop Drawing ระบบลิฟต์โดยสาร Passenger Elevator 3 ตัว",                 status: "Pending",   originatorName: "อภิชาติ เมคานิค" },
       { documentNo: "RFA-2026-019", type: "RFA", subType: "Shop Drawing", discipline: "FP", subject: "Shop Drawing ระบบท่อสปริงเกลอร์และ Fire Hose Cabinet ชั้น 1-15",       status: "Reviewing", originatorName: "สุทธิพงษ์ ไฟร์โปรเทค" },
-      { documentNo: "RFA-2026-020", type: "RFA", subType: "Shop Drawing", discipline: "ST", subject: "Shop Drawing การเสริมเหล็กฐานราก Mat Foundation ขนาด 20x20 ม.",         status: "Rejected",  originatorName: "จิราพร วิศวโครงสร้าง" },
+      { documentNo: "RFA-2026-020", type: "RFA", subType: "Shop Drawing", discipline: "ID", subject: "Shop Drawing เคาน์เตอร์ต้อนรับและเฟอร์นิเจอร์ Built-in ล็อบบี้",         status: "Rejected",  originatorName: "จิราพร ดีไซน์สตูดิโอ" },
 
       // ─── RFI (subType/discipline = null) × 4 สถานะ ───────────────────────────────
       { documentNo: "RFI-2026-001", type: "RFI", subject: "ขอตรวจสอบงานเทคอนกรีตพื้นชั้น 7 (Slab Inspection)",               status: "Pending",   originatorName: "สมชาย วิศวกรรม" },

@@ -47,8 +47,8 @@ const DocumentPage = () => {
 
   // Discipline options per subType
   const disciplineOptions = {
-    Material: ['AC', 'AR', 'EE', 'SN', 'ST'],
-    'Shop Drawing': ['AC', 'AR', 'EE', 'FP', 'SN', 'ST'],
+    Material: ['AR', 'ST', 'EE', 'SN', 'AC', 'ME', 'FP', 'ID'],
+    'Shop Drawing': ['AR', 'ST', 'EE', 'SN', 'AC', 'ME', 'FP', 'ID'],
   };
 
   // Helper to format type display

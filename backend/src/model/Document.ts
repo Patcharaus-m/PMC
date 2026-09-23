@@ -4,7 +4,7 @@ export interface IDocument extends MongoDocument {
   documentNo: string;
   type: "RFA" | "RFI" | "VO" | "VR";
   subType?: "General" | "Material" | "Shop Drawing";
-  discipline?: "AC" | "AR" | "EE" | "FP" | "SN" | "ST";
+  discipline?: "AC" | "AR" | "EE" | "FP" | "SN" | "ST" | "ME" | "ID";
   subject: string;
   status: "Pending" | "Approved" | "Rejected" | "Reviewing";
   pdfUrl: string;
@@ -28,7 +28,7 @@ const DocumentSchema = new Schema<IDocument>(
     },
     discipline: {
       type: String,
-      enum: ["AC", "AR", "EE", "FP", "SN", "ST"],
+      enum: ["AC", "AR", "EE", "FP", "SN", "ST", "ME", "ID"],
     },
     subject: { type: String, required: true },
     status: {
