@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Camera, Play, Square, Maximize2, Wifi, WifiOff, Loader2, Settings, Link, RefreshCw, AlertTriangle } from 'lucide-react';
+import defaultMockVideo from '../assets/VIDEOCCTV.mp4';
 
 // Backend host — override with VITE_BACKEND_URL for local dev (e.g. http://localhost:3000)
 const BACKEND_HOST = import.meta.env.VITE_BACKEND_URL || 'https://pmc-stream.duckdns.org';
@@ -15,19 +16,58 @@ const DEFAULT_RTSP = 'rtsp://somchai:Test1234@192.168.137.249:554/stream1';
  *  - reconnecting:  auto-reconnect countdown in progress
  */
 
-const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage }) => {
+const CameraFeed = ({
+  id,
+  zone,
+  defaultRtspUrl,
+  time = '00:45:12',
+  previewImage,
+  videoSrc = defaultMockVideo,
+  timeOffset = 0,
+  autoPlay = true,
+}) => {
+  const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const videoRef = useRef(null);
   const wsRef = useRef(null);
   const playerRef = useRef(null);
-  const [status, setStatus] = useState('disconnected');
+  const [status, setStatus] = useState(() => (autoPlay && videoSrc ? 'online' : 'disconnected'));
   const [demoMode, setDemoMode] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [uptime, setUptime] = useState('00:00:00');
   const [rtspUrl, setRtspUrl] = useState(defaultRtspUrl || DEFAULT_RTSP);
   const [showSettings, setShowSettings] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [currentDateTime, setCurrentDateTime] = useState('');
   const startTimeRef = useRef(null);
   const uptimeTimerRef = useRef(null);
+
+  // ── Real-time OSD Clock ──
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      setCurrentDateTime(`${dateStr} ${timeStr}`);
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current && timeOffset) {
+      try {
+        const dur = videoRef.current.duration;
+        if (dur && isFinite(dur) && dur > 0) {
+          videoRef.current.currentTime = timeOffset % dur;
+        }
+      } catch (e) {
+        console.warn('Error setting video timeOffset:', e);
+      }
+    }
+  };
 
   // ── Uptime counter ──
   const startUptime = useCallback(() => {
@@ -53,8 +93,32 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage 
     return `${WS_BASE}?url=${encodeURIComponent(rtspUrl)}`;
   }, [rtspUrl]);
 
+  // ── AutoPlay & initial playback for mock video ──
+  useEffect(() => {
+    if (autoPlay && videoSrc) {
+      startUptime();
+      if (videoRef.current) {
+        videoRef.current.play().catch((err) => {
+          console.warn('Autoplay prevented:', err);
+        });
+      }
+    }
+  }, [autoPlay, videoSrc, startUptime]);
+
   // ── Connect ──
   const connect = useCallback(() => {
+    // ถ้าเป็นโหมดวิดีโอจำลอง (Mock Video)
+    if (videoSrc) {
+      if (videoRef.current) {
+        videoRef.current.play().catch(console.warn);
+      }
+      setStatus('online');
+      setStatusMessage('');
+      setShowSettings(false);
+      startUptime();
+      return;
+    }
+
     // ถ้ามี previewImage → เข้าโหมดจำลอง (Demo) แทนการเชื่อมต่อจริง
     if (previewImage) {
       setDemoMode(true);
@@ -180,6 +244,17 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage 
 
   // ── Disconnect ──
   const disconnect = useCallback(() => {
+    // ถ้าเป็นโหมดวิดีโอจำลอง (Mock Video)
+    if (videoSrc) {
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      setStatus('disconnected');
+      setStatusMessage('');
+      stopUptime();
+      return;
+    }
+
     // ถ้าอยู่ในโหมดจำลอง → แค่ปิด demo mode
     if (demoMode) {
       setDemoMode(false);
@@ -201,11 +276,11 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage 
     if (ctx) {
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
-  }, [cleanup, stopUptime, demoMode]);
+  }, [cleanup, stopUptime, demoMode, videoSrc]);
 
   // ── Fullscreen ──
   const toggleFullscreen = () => {
-    const wrapper = canvasRef.current?.parentElement;
+    const wrapper = containerRef.current || canvasRef.current?.parentElement;
     if (!document.fullscreenElement) {
       wrapper?.requestFullscreen?.();
     } else {
@@ -230,13 +305,16 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage 
   const showOverlay = !isOnline;
 
   return (
-    <div className={`
-      aspect-video bg-[#0f1423] rounded-2xl border p-0 relative overflow-hidden flex flex-col w-full min-w-0
-      transition-all duration-300
-      ${isOnline ? 'border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.15)]' :
-        isOffline || isReconnecting ? 'border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]' :
-        'border-gray-800'}
-    `}>
+    <div
+      ref={containerRef}
+      className={`
+        aspect-video bg-[#0f1423] rounded-2xl border p-0 relative overflow-hidden flex flex-col w-full min-w-0
+        transition-all duration-300
+        ${isOnline ? 'border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.15)]' :
+          isOffline || isReconnecting ? 'border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]' :
+          'border-gray-800'}
+      `}
+    >
       
       {/* Top Bar */}
       <div className="flex justify-between items-start relative z-10 p-3 lg:p-4 pb-0 gap-2">
@@ -305,53 +383,108 @@ const CameraFeed = ({ id, zone, defaultRtspUrl, time = '00:45:12', previewImage 
       )}
       
       {/* Canvas / Video area */}
-      <div className="flex-1 relative flex items-center justify-center">
-        <canvas
-          ref={canvasRef}
-          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${showVideo ? 'opacity-100' : 'opacity-0'}`}
-        />
-
-        {/* Demo mode: show preview image as live feed */}
-        {demoMode && previewImage && (
+      <div className="flex-1 relative flex items-center justify-center overflow-hidden bg-black">
+        {videoSrc ? (
           <>
-            <img src={previewImage} alt={`Live CAM-${id}`} className="absolute inset-0 w-full h-full object-cover" />
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              autoPlay={autoPlay}
+              loop
+              muted
+              playsInline
+              onLoadedMetadata={handleLoadedMetadata}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                isOnline ? 'opacity-100' : 'opacity-40'
+              }`}
+            />
+
             {/* Scanline overlay for realism */}
-            <div className="absolute inset-0 pointer-events-none z-[1]" style={{
-              background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)'
-            }} />
-          </>
-        )}
+            {isOnline && (
+              <div
+                className="absolute inset-0 pointer-events-none z-[1]"
+                style={{
+                  background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)'
+                }}
+              />
+            )}
 
-        {/* Scanline overlay when connected (real stream) */}
-        {isOnline && !demoMode && (
-          <div className="absolute inset-0 pointer-events-none z-[1]" style={{
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)'
-          }} />
-        )}
-        
-        {/* ──── Fallback UI overlays ──── */}
-
-        {/* Disconnected: show preview image or camera icon */}
-        {isDisconnected && (
-          <div className="absolute inset-0 z-[2]">
-            {previewImage ? (
-              <>
-                <img src={previewImage} alt={`Preview CAM-${id}`} className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                  <div className="bg-black/50 backdrop-blur-sm rounded-xl px-4 py-3 flex flex-col items-center gap-1.5">
-                    <Camera className="text-gray-300" size={24} />
-                    <span className="text-[10px] text-gray-300 font-medium">ภาพจำลอง — กดเชื่อมต่อเพื่อดูสด</span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                <Camera className="text-gray-700/50" size={36} />
-                <span className="text-[10px] text-gray-600 font-medium">กดปุ่มเชื่อมต่อเพื่อรับสัญญาณ</span>
+            {/* Live CCTV Timestamp OSD */}
+            {isOnline && currentDateTime && (
+              <div className="absolute bottom-2 left-2 z-[2] bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono text-emerald-400 font-semibold tracking-wider flex items-center gap-1.5 border border-emerald-500/30 shadow-sm pointer-events-none select-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>{currentDateTime}</span>
+                <span className="text-gray-400 hidden sm:inline">| CAM-{id}</span>
               </div>
             )}
-          </div>
+
+            {/* Disconnected overlay on video */}
+            {isDisconnected && (
+              <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center gap-2 bg-black/50 backdrop-blur-[2px]">
+                <div className="bg-black/75 backdrop-blur-md rounded-xl px-4 py-3 flex flex-col items-center gap-1.5 border border-white/10 shadow-lg">
+                  <Camera className="text-gray-300" size={24} />
+                  <span className="text-[10px] text-gray-200 font-medium">หยุดการแสดงผลชั่วคราว</span>
+                  <button
+                    onClick={connect}
+                    className="mt-1 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all shadow-md active:scale-95"
+                  >
+                    <Play size={10} fill="white" />
+                    เล่นต่อ
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <canvas
+              ref={canvasRef}
+              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${showVideo ? 'opacity-100' : 'opacity-0'}`}
+            />
+
+            {/* Demo mode: show preview image as live feed */}
+            {demoMode && previewImage && (
+              <>
+                <img src={previewImage} alt={`Live CAM-${id}`} className="absolute inset-0 w-full h-full object-cover" />
+                {/* Scanline overlay for realism */}
+                <div className="absolute inset-0 pointer-events-none z-[1]" style={{
+                  background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)'
+                }} />
+              </>
+            )}
+
+            {/* Scanline overlay when connected (real stream) */}
+            {isOnline && !demoMode && (
+              <div className="absolute inset-0 pointer-events-none z-[1]" style={{
+                background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)'
+              }} />
+            )}
+            
+            {/* ──── Fallback UI overlays ──── */}
+
+            {/* Disconnected: show preview image or camera icon */}
+            {isDisconnected && (
+              <div className="absolute inset-0 z-[2]">
+                {previewImage ? (
+                  <>
+                    <img src={previewImage} alt={`Preview CAM-${id}`} className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                      <div className="bg-black/50 backdrop-blur-sm rounded-xl px-4 py-3 flex flex-col items-center gap-1.5">
+                        <Camera className="text-gray-300" size={24} />
+                        <span className="text-[10px] text-gray-300 font-medium">ภาพจำลอง — กดเชื่อมต่อเพื่อดูสด</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                    <Camera className="text-gray-700/50" size={36} />
+                    <span className="text-[10px] text-gray-600 font-medium">กดปุ่มเชื่อมต่อเพื่อรับสัญญาณ</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {/* Connecting: spinner */}

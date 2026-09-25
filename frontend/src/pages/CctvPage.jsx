@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import CameraFeed from '../components/CameraFeed';
 import DroneFeed from '../components/DroneFeed';
 import HeaderProfile from '../components/HeaderProfile';
+import videoCCTV from '../assets/VIDEOCCTV.mp4';
 
 const CctvPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -71,10 +72,38 @@ const CctvPage = () => {
         {/* --- CCTV Grid (Full Width) --- */}
         <div className="bg-white p-4 lg:p-6 rounded-2xl shadow-sm border border-gray-100 w-full min-w-0 mb-4 lg:mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-            <CameraFeed id="01" zone="ZONE A - MAIN ENTRANCE" previewImage="/cctv/cam01_entrance.png" />
-            <CameraFeed id="02" zone="ZONE B - MATERIAL STORAGE" previewImage="/cctv/cam02_storage.png" />
-            <CameraFeed id="03" zone="ZONE C - CRANE TOWER 1" previewImage="/cctv/cam03_crane.png" />
-            <CameraFeed id="04" zone="LOADING BAY - SOUTH" previewImage="/cctv/cam04_loading.png" />
+            <CameraFeed
+              id="01"
+              zone="ZONE A - MAIN ENTRANCE"
+              previewImage="/cctv/cam01_entrance.png"
+              videoSrc={videoCCTV}
+              timeOffset={0}
+              autoPlay={true}
+            />
+            <CameraFeed
+              id="02"
+              zone="ZONE B - MATERIAL STORAGE"
+              previewImage="/cctv/cam02_storage.png"
+              videoSrc={videoCCTV}
+              timeOffset={10}
+              autoPlay={true}
+            />
+            <CameraFeed
+              id="03"
+              zone="ZONE C - CRANE TOWER 1"
+              previewImage="/cctv/cam03_crane.png"
+              videoSrc={videoCCTV}
+              timeOffset={20}
+              autoPlay={true}
+            />
+            <CameraFeed
+              id="04"
+              zone="LOADING BAY - SOUTH"
+              previewImage="/cctv/cam04_loading.png"
+              videoSrc={videoCCTV}
+              timeOffset={30}
+              autoPlay={true}
+            />
           </div>
         </div>
 
